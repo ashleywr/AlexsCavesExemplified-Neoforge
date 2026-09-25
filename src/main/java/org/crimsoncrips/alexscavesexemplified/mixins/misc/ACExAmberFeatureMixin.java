@@ -5,7 +5,8 @@ import com.github.alexmodguy.alexscaves.server.level.feature.AmbersolFeature;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.FrogVariant;
@@ -15,8 +16,7 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fml.ModList;
+import net.neoforged.fml.ModList;
 import org.crimsoncrips.alexscavesexemplified.AlexsCavesExemplified;
 import org.crimsoncrips.alexscavesexemplified.compat.AMCompat;
 import org.spongepowered.asm.mixin.Mixin;
@@ -38,56 +38,54 @@ public abstract class ACExAmberFeatureMixin extends Feature<NoneFeatureConfigura
     @Inject(method = "drawOrb", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/WorldGenLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
     private static void drawOrb(WorldGenLevel level, BlockPos center, RandomSource random, BlockState blockState, int radiusX, int radiusY, int radiusZ, CallbackInfo ci, @Local(ordinal = 1) BlockPos fill) {
         if (random.nextDouble() < 0.02 && AlexsCavesExemplified.COMMON_CONFIG.PRESERVED_AMBER_ENABLED.get() && level.ensureCanWrite(fill) && level.ensureCanWrite(center)) {
-            ServerLevel servLevel = level.getLevel();
             switch (random.nextInt(0, 4)) {
                 case 0:
                     if (!ModList.get().isLoaded("alexsmobs"))
                         return;
-                    LivingEntity entity = AMCompat.createAmberAM(servLevel,random);
-                    finalizeAmberSpawn(new Vec3(fill.getCenter().x, fill.getY() + 0.4, fill.getCenter().z),entity,servLevel,random);
-
+                    LivingEntity entity = AMCompat.createAmberAM(level.getLevel(), random);
+                    finalizeAmberSpawn(fill, entity, level, random);
                     break;
                 case 1:
-                    Frog frog = EntityType.FROG.create(servLevel);
+                    Frog frog = EntityType.FROG.create(level.getLevel());
                     if (frog != null) {
                         frog.setNoAi(true);
-                        finalizeAmberSpawn(new Vec3(fill.getCenter().x, fill.getY() + 0.4, fill.getCenter().z),frog,servLevel,random);
+                        finalizeAmberSpawn(fill, frog, level, random);
                     }
                     break;
                 default:
-                    Tadpole tadpole = EntityType.TADPOLE.create(servLevel);
+                    Tadpole tadpole = EntityType.TADPOLE.create(level.getLevel());
                     if (tadpole != null) {
                         tadpole.setNoAi(true);
-                        finalizeAmberSpawn(new Vec3(fill.getCenter().x, fill.getY() + 0.4, fill.getCenter().z),tadpole,servLevel,random);
+                        finalizeAmberSpawn(fill, tadpole, level, random);
                     }
                     break;
-
             }
         }
     }
 
     @Unique
-    private static void finalizeAmberSpawn(Vec3 position, LivingEntity entity, ServerLevel level, RandomSource random){
+    private static void finalizeAmberSpawn(BlockPos spawnPos, LivingEntity entity, WorldGenLevel level, RandomSource random){
         entity.setInvulnerable(true);
-        entity.setPos(position);
-        int rotation = random.nextInt(0,361);
+        entity.setPos(spawnPos.getCenter().x, spawnPos.getY() + 0.4, spawnPos.getCenter().z);
+        int rotation = random.nextInt(0, 361);
         entity.setYBodyRot(rotation);
         entity.setYHeadRot(rotation);
         entity.setYRot(rotation);
         entity.setSilent(true);
 
         if (entity instanceof Frog frog){
-            FrogVariant frogVariant = switch (random.nextInt(0, 4)) {
-                case 0 -> FrogVariant.COLD;
-                case 1 -> FrogVariant.WARM;
-                case 2 -> FrogVariant.TEMPERATE;
-                default -> ACFrogRegistry.PRIMORDIAL.get();
+            Holder<FrogVariant> variant = switch (random.nextInt(0, 4)) {
+                case 0 -> level.getLevel().registryAccess().lookupOrThrow(Registries.FROG_VARIANT).getOrThrow(FrogVariant.COLD);
+                case 1 -> level.getLevel().registryAccess().lookupOrThrow(Registries.FROG_VARIANT).getOrThrow(FrogVariant.WARM);
+                case 2 -> level.getLevel().registryAccess().lookupOrThrow(Registries.FROG_VARIANT).getOrThrow(FrogVariant.TEMPERATE);
+                default -> ACFrogRegistry.PRIMORDIAL;
             };
-            frog.setVariant(frogVariant);
+            frog.setVariant(variant);
         }
 
+        // WorldGenLevel writes the entity into the generating chunk. Do not bypass it
+        // through ServerLevel: C2ME may place this feature on a worker thread.
         level.addFreshEntity(entity);
     }
-
 
 }

@@ -7,8 +7,10 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.crimsoncrips.alexscavesexemplified.misc.interfaces.LaunchedSeeking;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -57,9 +59,9 @@ public abstract class ACExSeekingArrowEntityMixin extends AbstractArrow implemen
     private static final EntityDataAccessor<Float> SPIN_ANGLE = SynchedEntityData.defineId(SeekingArrowEntity.class, EntityDataSerializers.FLOAT);;
 
     @Inject(method = "defineSynchedData", at = @At("TAIL"))
-    private void defineSynched(CallbackInfo ci){
-        this.entityData.define(LAUNCHED_TARGET_ID, -1);
-        this.entityData.define(SPIN_ANGLE, (float)this.random.nextInt(0,361));
+    private void defineSynched(SynchedEntityData.Builder builder, CallbackInfo ci){
+        builder.define(LAUNCHED_TARGET_ID, -1);
+        builder.define(SPIN_ANGLE, (float)this.random.nextInt(0,361));
     }
 
     @Override
@@ -85,6 +87,18 @@ public abstract class ACExSeekingArrowEntityMixin extends AbstractArrow implemen
     @Override
     public void setStopSeeking(boolean stopSeeking) {
         this.stopSeeking = stopSeeking;
+    }
+
+    @Override
+    public void resetForLaunch() {
+        Vec3 motion = this.getDeltaMovement();
+        this.lerpMotion(motion.x, motion.y, motion.z);
+        this.inGround = false;
+    }
+
+    @Override
+    public boolean canLaunchAt(Entity entity) {
+        return this.canHitEntity(entity);
     }
 
 }

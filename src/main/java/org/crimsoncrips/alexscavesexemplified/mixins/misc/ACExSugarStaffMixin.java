@@ -18,6 +18,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
@@ -51,7 +52,7 @@ public abstract class ACExSugarStaffMixin extends Item {
             player.swing(hand);
             Entity lookingAtEntity = SeaStaffItem.getClosestLookingAtEntityFor(level, player, (double)32.0F);
             if(hex){
-                int humunguous = itemstack.getEnchantmentLevel(ACEnchantmentRegistry.HUMUNGOUS_HEX.get());
+                int humunguous = ACExUtils.getEnchantmentLevel(itemstack, player, ACEnchantmentRegistry.HUMUNGOUS_HEX);
                 float maxDist = 128;
                 HitResult realHitResult = ProjectileUtil.getHitResultOnViewVector(player, Entity::canBeHitByProjectile, maxDist);
                 if(realHitResult.getType() == HitResult.Type.MISS){
@@ -94,7 +95,7 @@ public abstract class ACExSugarStaffMixin extends Item {
                 sugarStaffHexEntity.setHexScale(1.0F + 0.25F * (float) humunguous);
                 level.addFreshEntity(sugarStaffHexEntity);
                 level.playSound(null, player.blockPosition(), ACSoundRegistry.SUGAR_STAFF_CAST_HEX.get(), SoundSource.PLAYERS, 1.0F, 0.0F);
-                sugarStaffHexEntity.setLifespan(300 + 60 * itemstack.getEnchantmentLevel(ACEnchantmentRegistry.SPELL_LASTING.get()));
+                sugarStaffHexEntity.setLifespan(300 + 60 * ACExUtils.getEnchantmentLevel(itemstack, player, ACEnchantmentRegistry.SPELL_LASTING));
 
                 if (!player.isCreative()) {
                     player.getOffhandItem().shrink(1);
@@ -102,9 +103,9 @@ public abstract class ACExSugarStaffMixin extends Item {
                 }
             }else{
 
-                boolean seeking = itemstack.getEnchantmentLevel(ACEnchantmentRegistry.SEEKCANDY.get()) > 0;
-                boolean straight = itemstack.getEnchantmentLevel(ACEnchantmentRegistry.PEPPERMINT_PUNTING.get()) > 0;
-                int multipleMint = itemstack.getEnchantmentLevel(ACEnchantmentRegistry.MULTIPLE_MINT.get());
+                boolean seeking = ACExUtils.getEnchantmentLevel(itemstack, player, ACEnchantmentRegistry.SEEKCANDY) > 0;
+                boolean straight = ACExUtils.getEnchantmentLevel(itemstack, player, ACEnchantmentRegistry.PEPPERMINT_PUNTING) > 0;
+                int multipleMint = ACExUtils.getEnchantmentLevel(itemstack, player, ACEnchantmentRegistry.MULTIPLE_MINT);
 
                 for (int layers = 1; layers < (multipleMint != 0 ? multipleMint + 2 : 2);layers++){
                     for (int l = 0; l < 5 * (2 + layers); l++) {
@@ -119,7 +120,7 @@ public abstract class ACExSugarStaffMixin extends Item {
 
             }
             ACExUtils.awardAdvancement(player,"radiant_wrath","powered");
-            itemstack.hurtAndBreak(10, player, (player1) -> player1.broadcastBreakEvent(player1.getUsedItemHand()));
+            itemstack.hurtAndBreak(10, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
 
             cir.setReturnValue(InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide()));
         }

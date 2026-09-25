@@ -78,13 +78,13 @@ public abstract class ACExSpelunkeryScreenMixin extends AbstractContainerScreen<
             this.doneWithTutorial = true;
             SpelunkeryTableMenu var10000 = (SpelunkeryTableMenu)this.menu;
             SpelunkeryTableMenu.setTutorialComplete(Minecraft.getInstance().player, true);
-            AlexsCaves.NETWORK_WRAPPER.sendToServer(new SpelunkeryTableChangeMessage(true));
+            AlexsCaves.sendMSGToServer(new SpelunkeryTableChangeMessage(true));
             this.level = 0;
             this.fullResetWords();
         } else if (this.finishedLevel && this.passLevelProgress >= 10.0F && this.attemptsLeft <= 0) {
             if (AlexsCavesExemplified.COMMON_CONFIG.FORGIVING_SPELUKING_ENABLED.get()) {
                 if (level <= 0) {
-                    AlexsCaves.NETWORK_WRAPPER.sendToServer(new SpelunkeryTableChangeMessage(false));
+                    AlexsCaves.sendMSGToServer(new SpelunkeryTableChangeMessage(false));
                     fullResetWords();
                     Minecraft.getInstance().setScreen(null);
                 } else {
@@ -97,7 +97,7 @@ public abstract class ACExSpelunkeryScreenMixin extends AbstractContainerScreen<
                 }
             } else {
                 level = 0;
-                AlexsCaves.NETWORK_WRAPPER.sendToServer(new SpelunkeryTableChangeMessage(false));
+                AlexsCaves.sendMSGToServer(new SpelunkeryTableChangeMessage(false));
                 fullResetWords();
                 Minecraft.getInstance().setScreen(null);
             }
@@ -147,7 +147,7 @@ public abstract class ACExSpelunkeryScreenMixin extends AbstractContainerScreen<
     public void onClose() {
         if (!AlexsCavesExemplified.COMMON_CONFIG.REDOABLE_SPELUNKY_ENABLED.get()) {
             if (hasPaper() && hasTablet() && hasClickedAnyWord() && level < 3) {
-                AlexsCaves.NETWORK_WRAPPER.sendToServer(new SpelunkeryTableChangeMessage(false));
+                AlexsCaves.sendMSGToServer(new SpelunkeryTableChangeMessage(false));
             }
         }
         super.onClose();

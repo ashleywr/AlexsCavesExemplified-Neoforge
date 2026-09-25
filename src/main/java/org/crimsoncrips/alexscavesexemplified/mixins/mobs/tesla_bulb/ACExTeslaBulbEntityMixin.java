@@ -60,19 +60,19 @@ public abstract class ACExTeslaBulbEntityMixin extends BlockEntity implements AC
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, net.minecraft.core.HolderLookup.Provider registries) {
         if (packet != null && packet.getTag() != null) {
             charge = packet.getTag().getInt("TeslaCharge");
         }
     }
 
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    protected void loadAdditional(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
         charge = tag.getInt("TeslaCharge");
     }
 
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void saveAdditional(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
         tag.putInt("TeslaCharge", charge);
     }
 
@@ -83,7 +83,7 @@ public abstract class ACExTeslaBulbEntityMixin extends BlockEntity implements AC
             ACExBaseInterface tickAccesor = (ACExBaseInterface)entity;
 
             Player target = null;
-            for (Player livingEntity : level.getEntitiesOfClass(Player.class, new AABB(blockPos.offset(-5, -5, -5), blockPos.offset(5, 5, 5)))) {
+            for (Player livingEntity : level.getEntitiesOfClass(Player.class, new AABB(Vec3.atLowerCornerOf(blockPos.offset(-5, -5, -5)), Vec3.atLowerCornerOf(blockPos.offset(5, 5, 5))))) {
                 target = livingEntity;
             }
 

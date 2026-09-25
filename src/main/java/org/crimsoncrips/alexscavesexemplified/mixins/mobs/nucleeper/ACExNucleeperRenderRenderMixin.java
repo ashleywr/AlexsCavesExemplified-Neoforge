@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.ForgeRenderTypes;
+import net.neoforged.neoforge.client.NeoForgeRenderTypes;
 import org.crimsoncrips.alexscavesexemplified.misc.interfaces.NucleeperXtra;
 import org.spongepowered.asm.mixin.Mixin;
 
@@ -21,16 +21,16 @@ public abstract class ACExNucleeperRenderRenderMixin extends RenderLayer<Nucleep
 
 
 
-    private static final ResourceLocation TEXTURE_EXPLODE = new ResourceLocation("alexscaves:textures/entity/nucleeper/nucleeper_explode.png");
-    private static final ResourceLocation TEXTURE_BROKEN_GLASS = new ResourceLocation("alexscavesexemplified:textures/entity/nucleeper/broken_glass.png");
+    private static final ResourceLocation TEXTURE_EXPLODE = ResourceLocation.parse("alexscaves:textures/entity/nucleeper/nucleeper_explode.png");
+    private static final ResourceLocation TEXTURE_BROKEN_GLASS = ResourceLocation.parse("alexscavesexemplified:textures/entity/nucleeper/broken_glass.png");
 
-    private static final ResourceLocation TEXTURE_GLOW = new ResourceLocation("alexscaves:textures/entity/nucleeper/nucleeper_glow.png");
+    private static final ResourceLocation TEXTURE_GLOW = ResourceLocation.parse("alexscaves:textures/entity/nucleeper/nucleeper_glow.png");
 
-    private static final ResourceLocation TEXTURE_GLASS = new ResourceLocation("alexscaves:textures/entity/nucleeper/nucleeper_glass.png");
+    private static final ResourceLocation TEXTURE_GLASS = ResourceLocation.parse("alexscaves:textures/entity/nucleeper/nucleeper_glass.png");
 
-    private static final ResourceLocation TEXTURE_BUTTONS_0 = new ResourceLocation("alexscaves:textures/entity/nucleeper/nucleeper_buttons_0.png");
-    private static final ResourceLocation TEXTURE_BUTTONS_1 = new ResourceLocation("alexscaves:textures/entity/nucleeper/nucleeper_buttons_1.png");
-    private static final ResourceLocation TEXTURE_BUTTONS_2 = new ResourceLocation("alexscaves:textures/entity/nucleeper/nucleeper_buttons_2.png");
+    private static final ResourceLocation TEXTURE_BUTTONS_0 = ResourceLocation.parse("alexscaves:textures/entity/nucleeper/nucleeper_buttons_0.png");
+    private static final ResourceLocation TEXTURE_BUTTONS_1 = ResourceLocation.parse("alexscaves:textures/entity/nucleeper/nucleeper_buttons_1.png");
+    private static final ResourceLocation TEXTURE_BUTTONS_2 = ResourceLocation.parse("alexscaves:textures/entity/nucleeper/nucleeper_buttons_2.png");
     
     public ACExNucleeperRenderRenderMixin(RenderLayerParent<NucleeperEntity, NucleeperModel> pRenderer) {
         super(pRenderer);
@@ -41,9 +41,9 @@ public abstract class ACExNucleeperRenderRenderMixin extends RenderLayer<Nucleep
         float alpha = (float)((double)1.0F + Math.sin((double)(ageInTicks * 0.3F))) * 0.25F + 0.5F;
         float explodeProgress = entitylivingbaseIn.getExplodeProgress(partialTicks);
         VertexConsumer ivertexbuilder1 = bufferIn.getBuffer(ACRenderTypes.getEyesAlphaEnabled(TEXTURE_GLOW));
-        ((NucleeperModel)this.getParentModel()).renderToBuffer(poseStack, ivertexbuilder1, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), 1.0F, 1.0F, 1.0F, alpha);
-        VertexConsumer ivertexbuilder2 = bufferIn.getBuffer(ForgeRenderTypes.getUnlitTranslucent(TEXTURE_GLASS));
-        ((NucleeperModel)this.getParentModel()).renderToBuffer(poseStack, ivertexbuilder2, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);
+        ((NucleeperModel)this.getParentModel()).renderToBuffer(poseStack, ivertexbuilder1, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), net.minecraft.util.FastColor.ARGB32.colorFromFloat(alpha, 1.0F, 1.0F, 1.0F));
+        VertexConsumer ivertexbuilder2 = bufferIn.getBuffer(NeoForgeRenderTypes.getUnlitTranslucent(TEXTURE_GLASS));
+        ((NucleeperModel)this.getParentModel()).renderToBuffer(poseStack, ivertexbuilder2, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), net.minecraft.util.FastColor.ARGB32.colorFromFloat(1.0F, 1.0F, 1.0F, 1.0F));
         int buttonDiv = entitylivingbaseIn.tickCount / 5 % 6;
         if (entitylivingbaseIn.isCharged()) {
             buttonDiv = entitylivingbaseIn.tickCount / 2 % 6;
@@ -59,11 +59,11 @@ public abstract class ACExNucleeperRenderRenderMixin extends RenderLayer<Nucleep
                 buttons = TEXTURE_BUTTONS_2;
             }
             VertexConsumer ivertexbuilder3 = bufferIn.getBuffer(RenderType.eyes(buttons));
-            ((NucleeperModel)this.getParentModel()).renderToBuffer(poseStack, ivertexbuilder3, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);
+            ((NucleeperModel)this.getParentModel()).renderToBuffer(poseStack, ivertexbuilder3, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), net.minecraft.util.FastColor.ARGB32.colorFromFloat(1.0F, 1.0F, 1.0F, 1.0F));
 
         }
         VertexConsumer ivertexbuilder4 = bufferIn.getBuffer(ACRenderTypes.getEyesAlphaEnabled(TEXTURE_EXPLODE));
-        ((NucleeperModel)this.getParentModel()).renderToBuffer(poseStack, ivertexbuilder4, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), 1.0F, 1.0F, 1.0F, explodeProgress);
+        ((NucleeperModel)this.getParentModel()).renderToBuffer(poseStack, ivertexbuilder4, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), net.minecraft.util.FastColor.ARGB32.colorFromFloat(explodeProgress, 1.0F, 1.0F, 1.0F));
     }
 
 

@@ -5,12 +5,16 @@ import com.github.alexmodguy.alexscaves.server.entity.item.MagneticWeaponEntity;
 import com.github.alexmodguy.alexscaves.server.entity.living.*;
 import com.github.alexmodguy.alexscaves.server.misc.ACTagRegistry;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import org.crimsoncrips.alexscavesexemplified.AlexsCavesExemplified;
 import org.crimsoncrips.alexscavesexemplified.misc.ACExUtils;
@@ -40,7 +44,9 @@ public abstract class ACExTeletorMixin extends Monster {
                 if (item.getItem().is(ACTagRegistry.TELETOR_SPAWNS_WITH) && teletor.getWeapon() == null) {
                     ItemStack stolen = item.getItem();
                     MagneticWeaponEntity magneticWeapon = ACEntityRegistry.MAGNETIC_WEAPON.get().create(this.level());
-                    stolen.getTag().putBoolean("Stolen", true);
+                    CompoundTag customData = stolen.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+                    customData.putBoolean("Stolen", true);
+                    stolen.set(DataComponents.CUSTOM_DATA, CustomData.of(customData));
                     magneticWeapon.setItemStack(stolen);
                     magneticWeapon.setControllerUUID(teletor.getUUID());
                     teletor.setWeaponUUID(magneticWeapon.getUUID());
@@ -60,7 +66,8 @@ public abstract class ACExTeletorMixin extends Monster {
         if (weapon instanceof MagneticWeaponEntity magneticWeapon) {
             ItemStack itemstack = magneticWeapon.getItemStack();
             float f1 = this.getEquipmentDropChance(EquipmentSlot.MAINHAND);
-            if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack) && !(this.random.nextFloat() < f1) && itemstack.getTag().getBoolean("Stolen")) {
+            CompoundTag customData = itemstack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+            if (!itemstack.isEmpty() && ACExUtils.getEnchantmentLevel(itemstack, this, Enchantments.VANISHING_CURSE) <= 0 && !(this.random.nextFloat() < f1) && customData.getBoolean("Stolen")) {
                 ItemEntity stolenItem = new ItemEntity(this.level(), this.getX(), this.getEyeY(), this.getZ(), itemstack);
                 stolenItem.setGlowingTag(true);
                 this.level().addFreshEntity(stolenItem);

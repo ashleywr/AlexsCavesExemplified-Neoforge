@@ -15,6 +15,8 @@ import com.github.alexmodguy.alexscaves.server.misc.ACSoundRegistry;
 import com.github.alexmodguy.alexscaves.server.misc.ACTagRegistry;
 import com.github.alexmodguy.alexscaves.server.potion.ACEffectRegistry;
 import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -34,23 +36,25 @@ import net.minecraft.world.entity.animal.Ocelot;
 import net.minecraft.world.entity.animal.Parrot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.DyedItemColor;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.event.entity.living.*;
-import net.minecraftforge.event.entity.player.BonemealEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.neoforge.event.ServerChatEvent;
+import net.neoforged.neoforge.event.entity.living.*;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.event.entity.player.BonemealEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import org.crimsoncrips.alexscavesexemplified.AlexsCavesExemplified;
-import org.crimsoncrips.alexscavesexemplified.compat.ACEnrichedCompat;
 import org.crimsoncrips.alexscavesexemplified.compat.AMCompat;
 import org.crimsoncrips.alexscavesexemplified.compat.SupplementariesCompat;
 import org.crimsoncrips.alexscavesexemplified.datagen.ACExDamageTypes;
@@ -73,11 +77,10 @@ import java.util.Optional;
 import static net.minecraft.world.entity.EntityType.*;
 
 
-@Mod.EventBusSubscriber(modid = AlexsCavesExemplified.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ACExemplifiedEvents {
 
     @SubscribeEvent
-    public void onEntityFinalizeSpawn(MobSpawnEvent.FinalizeSpawn event) {
+    public void onEntityFinalizeSpawn(FinalizeSpawnEvent event) {
         final var entity = event.getEntity();
 
         Double chargedChance = AlexsCavesExemplified.COMMON_CONFIG.CHARGED_CAVE_CREEPER_CHANCE.get();
@@ -94,7 +97,7 @@ public class ACExemplifiedEvents {
 
         if (AlexsCavesExemplified.COMMON_CONFIG.RABIES_ENABLED.get() && entity.getRandom().nextDouble() < 0.05){
             if (entity instanceof CorrodentEntity || entity instanceof UnderzealotEntity || entity instanceof VesperEntity){
-                entity.addEffect(new MobEffectInstance(ACExEffects.RABIAL.get(), 140000, 0));
+                entity.addEffect(new MobEffectInstance(ACExEffects.RABIAL, 140000, 0));
             }
         }
 
@@ -132,7 +135,7 @@ public class ACExemplifiedEvents {
                     }
                     ACExUtils.awardAdvancement(player,"gluttony","eat");
                     if (random.nextDouble() < 0.01)
-                        player.addEffect(new MobEffectInstance(ACEffectRegistry.SUGAR_RUSH.get(), 100, 0));
+                        player.addEffect(new MobEffectInstance(ACEffectRegistry.SUGAR_RUSH, 100, 0));
 
 
                 } else if (player.getFoodData().needsFood()) {
@@ -146,7 +149,7 @@ public class ACExemplifiedEvents {
                     }
                     ACExUtils.awardAdvancement(player,"gluttony","eat");
                     if (random.nextDouble() < 0.01)
-                        player.addEffect(new MobEffectInstance(ACEffectRegistry.SUGAR_RUSH.get(), 100, 0));
+                        player.addEffect(new MobEffectInstance(ACEffectRegistry.SUGAR_RUSH, 100, 0));
 
                 }
             }
@@ -370,8 +373,10 @@ public class ACExemplifiedEvents {
     }
 
     @SubscribeEvent
-    public void mobTickEvents(LivingEvent.LivingTickEvent livingTickEvent){
-        LivingEntity livingEntity = livingTickEvent.getEntity();
+    public void mobTickEvents(EntityTickEvent.Post livingTickEvent){
+        if (!(livingTickEvent.getEntity() instanceof LivingEntity livingEntity)) {
+            return;
+        }
         Level level = livingEntity.level();
 
         if (livingEntity instanceof SeaPigEntity seaPigEntity && AlexsCavesExemplified.COMMON_CONFIG.POISONOUS_SKIN_ENABLED.get()) {
@@ -412,15 +417,14 @@ public class ACExemplifiedEvents {
                         return;
                     if (!(player.getRandom().nextDouble() < 0.05))
                         return;
-                    player.getMainHandItem().hurtAndBreak(1, player, (p_233654_0_) -> {});
+                    player.getMainHandItem().hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
                 }
                 if (livingEntity.getVehicle() instanceof GumWormSegmentEntity && trueOffhand) {
                     if (player.isCreative())
                         return;
                     if (!(player.getRandom().nextDouble() < 0.05))
                         return;
-                    player.getOffhandItem().hurtAndBreak(1, player, (p_233654_0_) -> {
-                    });
+                    player.getOffhandItem().hurtAndBreak(1, player, EquipmentSlot.OFFHAND);
                 }
             }
         }
@@ -428,7 +432,7 @@ public class ACExemplifiedEvents {
 
 
 
-        if (AlexsCavesExemplified.COMMON_CONFIG.GUASLOWPOKE_ENABLED.get() && livingEntity.getType().is(ACExEntityTagGenerator.GUANO_IMMUNITY) && (livingEntity.getFeetBlockState().is(ACBlockRegistry.GUANO_BLOCK.get()) || livingEntity.getFeetBlockState().is(ACBlockRegistry.GUANO_LAYER.get()))){
+        if (AlexsCavesExemplified.COMMON_CONFIG.GUASLOWPOKE_ENABLED.get() && livingEntity.getType().is(ACExEntityTagGenerator.GUANO_IMMUNITY) && (livingEntity.getBlockStateOn().is(ACBlockRegistry.GUANO_BLOCK.get()) || livingEntity.getBlockStateOn().is(ACBlockRegistry.GUANO_LAYER.get()))){
             livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 0));
         }
 
@@ -468,7 +472,7 @@ public class ACExemplifiedEvents {
 
 
         if (AlexsCavesExemplified.COMMON_CONFIG.STICKY_SODA_ENABLED.get() && !livingEntity.getType().is(ACTagRegistry.CANDY_MOBS)){
-            if(livingEntity.getFeetBlockState().is(ACBlockRegistry.PURPLE_SODA.get())){
+            if(livingEntity.getBlockStateOn().is(ACBlockRegistry.PURPLE_SODA.get())){
                 livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 90, 0));
                 ACExUtils.awardAdvancement(livingEntity, "sticky_soda", "stick");
             }
@@ -491,7 +495,7 @@ public class ACExemplifiedEvents {
 
         int irradiationAmmount = AlexsCavesExemplified.COMMON_CONFIG.EXEMPLIFIED_IRRADIATION_AMOUNT.get();
         if(irradiationAmmount > 0 && level.random.nextDouble() < 0.1){
-            MobEffectInstance irradiated = livingEntity.getEffect(ACEffectRegistry.IRRADIATED.get());
+            MobEffectInstance irradiated = livingEntity.getEffect(ACEffectRegistry.IRRADIATED);
             if (irradiated != null && irradiated.getAmplifier() >= irradiationAmmount - 1) {
                 ACExUtils.awardAdvancement(livingEntity,"deathly_radiation","radiate");
                 livingEntity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 60, 0));
@@ -501,7 +505,7 @@ public class ACExemplifiedEvents {
                 livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 0));
 
                 if (ModList.get().isLoaded("alexsmobs")) {
-                    livingEntity.addEffect(new MobEffectInstance(AMCompat.exsanguination(), 60, 0));
+                    livingEntity.addEffect(new MobEffectInstance(Holder.direct(AMCompat.exsanguination()), 60, 0));
                 }
             }
         }
@@ -516,11 +520,11 @@ public class ACExemplifiedEvents {
                     }
                 }
                 if (blockState.getValue(GeothermalVentBlock.SMOKE_TYPE) == 2){
-                    livingEntity.setSecondsOnFire(5);
+                    livingEntity.igniteForSeconds(5.0F);
                 }
                 if (blockState.getValue(GeothermalVentBlock.SMOKE_TYPE) == 3){
-                    if(!livingEntity.hasEffect(ACEffectRegistry.IRRADIATED.get())){
-                        livingEntity.addEffect(new MobEffectInstance(ACEffectRegistry.IRRADIATED.get(), 400, 0));
+                    if(!livingEntity.hasEffect(ACEffectRegistry.IRRADIATED)){
+                        livingEntity.addEffect(new MobEffectInstance(ACEffectRegistry.IRRADIATED, 400, 0));
                     }
                 }
             }
@@ -537,7 +541,7 @@ public class ACExemplifiedEvents {
 
 
         if(AlexsCavesExemplified.COMMON_CONFIG.IRRADIATION_WASHOFF_ENABLED.get() && ModList.get().isLoaded("supplementaries")){
-            MobEffectInstance irradiated = player.getEffect(ACEffectRegistry.IRRADIATED.get());
+            MobEffectInstance irradiated = player.getEffect(ACEffectRegistry.IRRADIATED);
             if (irradiated != null && SupplementariesCompat.isSoap(player.getItemInHand(hand)) && (player.isInWater() || player.getBlockStateOn().is(Blocks.WATER_CAULDRON))) {
                 ACExUtils.irradiationWash(player,player.getRandom().nextInt(200,500));
                 player.swing(hand);
@@ -587,13 +591,13 @@ public class ACExemplifiedEvents {
     }
 
     @SubscribeEvent
-    public void livingDamage(LivingDamageEvent livingDamageEvent) {
+    public void livingDamage(LivingDamageEvent.Post livingDamageEvent) {
         Entity damager = livingDamageEvent.getSource().getEntity();
         LivingEntity damaged = livingDamageEvent.getEntity();
 
 
-        if(AlexsCavesExemplified.COMMON_CONFIG.RABIES_ENABLED.get() && damager instanceof LivingEntity living && living.hasEffect(ACExEffects.RABIAL.get()) && damaged.getType().is(ACExEntityTagGenerator.CAN_RABIES) && !damaged.hasEffect(MobEffects.DAMAGE_RESISTANCE)){
-            damaged.addEffect(new MobEffectInstance(ACExEffects.RABIAL.get(), 72000, 0));
+        if(AlexsCavesExemplified.COMMON_CONFIG.RABIES_ENABLED.get() && damager instanceof LivingEntity living && living.hasEffect(ACExEffects.RABIAL) && damaged.getType().is(ACExEntityTagGenerator.CAN_RABIES) && !damaged.hasEffect(MobEffects.DAMAGE_RESISTANCE)){
+            damaged.addEffect(new MobEffectInstance(ACExEffects.RABIAL, 72000, 0));
             ACExUtils.awardAdvancement(damager,"rabial_spread","spread");
         }
 
@@ -611,7 +615,8 @@ public class ACExemplifiedEvents {
 
     @SubscribeEvent
     public void bonemealEvent(BonemealEvent bonemealEvent) {
-        Entity entity = bonemealEvent.getEntity();
+        Entity entity = bonemealEvent.getPlayer();
+        if (entity == null) return;
         Level level = bonemealEvent.getLevel();
         BlockPos blockPos = bonemealEvent.getPos();
         BlockState blockState = level.getBlockState(blockPos);
@@ -647,28 +652,30 @@ public class ACExemplifiedEvents {
             }
         }
 
-        if (AlexsCavesExemplified.COMMON_CONFIG.RABIES_ENABLED.get() && player.getRandom().nextDouble() < 0.01 && player.hasEffect(ACExEffects.RABIAL.get())){
+        if (AlexsCavesExemplified.COMMON_CONFIG.RABIES_ENABLED.get() && player.getRandom().nextDouble() < 0.01 && player.hasEffect(ACExEffects.RABIAL)){
             serverChatEvent.setMessage(Component.nullToEmpty("rrRRRrrrAgh!... " + message));
         }
     }
 
 
     private void checkLeatherArmor(ItemStack item, LivingEntity living){
-        if (item.getItem() instanceof DyeableLeatherItem dyeableLeatherItem && !dyeableLeatherItem.hasCustomColor(item)) {
-            dyeableLeatherItem.setColor(item, 0Xb839e6);
+        if (item.is(ItemTags.DYEABLE) && !item.has(DataComponents.DYED_COLOR)) {
+            item.set(DataComponents.DYED_COLOR, new DyedItemColor(0XB839E6, true));
             ACExUtils.awardAdvancement(living,"purple_coloring","colored");
         }
     }
 
     @SubscribeEvent
-    public static void playerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+    public void playerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (ModList.get().isLoaded("patchouli")){
             Player player = event.getEntity();
             CompoundTag playerData = event.getEntity().getPersistentData();
             CompoundTag data = playerData.getCompound(Player.PERSISTED_NBT_TAG);
 
             ItemStack book = new ItemStack(PatchouliItems.BOOK);
-            book.getOrCreateTag().putString("patchouli:book", "alexscavesexemplified:acewiki");
+            CompoundTag bookData = new CompoundTag();
+            bookData.putString("patchouli:book", "alexscavesexemplified:acewiki");
+            book.set(DataComponents.CUSTOM_DATA, CustomData.of(bookData));
 
             if (!data.getBoolean("ace_book") && AlexsCavesExemplified.COMMON_CONFIG.ACE_WIKI_ENABLED.get()) {
                 player.addItem(book);

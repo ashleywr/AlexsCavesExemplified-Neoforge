@@ -48,10 +48,10 @@ public abstract class ACExGauntletItemMixin extends Item {
     private boolean alexsCavesExemplified$use(boolean original, @Local Player player, @Local InteractionHand interactionHand) {
         ItemStack itemstack = player.getItemInHand(interactionHand);
         Entity entityLook = ACExUtils.getLookingAtEntity(player);
-        return original || ((entityLook instanceof ItemEntity item && grabableItems(item.getItem(),itemstack)) || (entityLook instanceof MagnetronEntity || entityLook instanceof MagnetronPartEntity) || (entityLook instanceof MagneticWeaponEntity magneticWeaponEntity && magneticWeaponEntity.getController() instanceof TeletorEntity)) && AlexsCavesExemplified.COMMON_CONFIG.MAGNETICISM_ENABLED.get() && itemstack.getEnchantmentLevel(ACExEnchants.MAGNETICISM.get()) > 0;
+        return original || ((entityLook instanceof ItemEntity item && grabableItems(item.getItem(),itemstack, player)) || (entityLook instanceof MagnetronEntity || entityLook instanceof MagnetronPartEntity) || (entityLook instanceof MagneticWeaponEntity magneticWeaponEntity && magneticWeaponEntity.getController() instanceof TeletorEntity)) && AlexsCavesExemplified.COMMON_CONFIG.MAGNETICISM_ENABLED.get() && ACExEnchants.getMagneticismLevel(itemstack, player) > 0;
     }
 
-        @Inject(method = "onUseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getEnchantmentLevel(Lnet/minecraft/world/item/enchantment/Enchantment;)I"))
+    @Inject(method = "onUseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getEnchantmentLevel(Lnet/minecraft/core/Holder;)I"))
     private void alexsCavesExemplified$onUseTick(Level level, LivingEntity living, ItemStack stack, int timeUsing, CallbackInfo ci, @Local(ordinal = 1) ItemStack otherStack, @Local boolean otherMagneticWeaponsInUse) {
         Entity entityLook = null;
 
@@ -67,7 +67,7 @@ public abstract class ACExGauntletItemMixin extends Item {
         }
 
 
-        if (AlexsCavesExemplified.COMMON_CONFIG.MAGNETICISM_ENABLED.get() && living instanceof Player player && !otherMagneticWeaponsInUse && stack.getEnchantmentLevel(ACExEnchants.MAGNETICISM.get()) > 0 && !grabableItems(otherStack, stack)) {
+        if (AlexsCavesExemplified.COMMON_CONFIG.MAGNETICISM_ENABLED.get() && living instanceof Player player && !otherMagneticWeaponsInUse && ACExEnchants.getMagneticismLevel(stack, living) > 0 && !grabableItems(otherStack, stack, living)) {
             if (entityLook instanceof MagneticWeaponEntity magneticWeaponEntity && magneticWeaponEntity.getController() instanceof TeletorEntity teletor) {
                 magneticWeaponEntity.setControllerUUID(player.getUUID());
                 teletor.setWeaponUUID(null);
@@ -76,7 +76,7 @@ public abstract class ACExGauntletItemMixin extends Item {
                     itemStack.setDamageValue(itemStack.getMaxDamage() - teletor.getRandom().nextInt(1 + teletor.getRandom().nextInt(Math.max(itemStack.getMaxDamage() - 3, 1))));
                 }
                 ACExUtils.awardAdvancement(player, "galena_steal", "steal");
-            } else if (entityLook instanceof ItemEntity item && grabableItems(item.getItem(), stack)) {
+            } else if (entityLook instanceof ItemEntity item && grabableItems(item.getItem(), stack, living)) {
                 ItemStack copy = item.getItem().copy();
                 item.discard();
                 MagneticWeaponEntity magneticWeapon = ACEntityRegistry.MAGNETIC_WEAPON.get().create(level);
@@ -111,7 +111,7 @@ public abstract class ACExGauntletItemMixin extends Item {
                     }
                 } else {
                     if (!player.isCreative()){
-                        stack.hurtAndBreak(80,player,livingEntity -> {});
+                        stack.hurtAndBreak(80, player, player.getUsedItemHand() == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
                         player.getCooldowns().addCooldown(stack.getItem(),500);
                     }
                     MagneticWeaponEntity magneticWeapon = (MagneticWeaponEntity)((EntityType)ACEntityRegistry.MAGNETIC_WEAPON.get()).create(level);
@@ -131,8 +131,8 @@ public abstract class ACExGauntletItemMixin extends Item {
 
 
 
-    public boolean grabableItems(ItemStack item, ItemStack gauntlet){
-        boolean crystallization = gauntlet.getEnchantmentLevel(ACEnchantmentRegistry.CRYSTALLIZATION.get()) > 0;
+    public boolean grabableItems(ItemStack item, ItemStack gauntlet, LivingEntity holder){
+        boolean crystallization = ACExUtils.getEnchantmentLevel(gauntlet, holder, ACEnchantmentRegistry.CRYSTALLIZATION) > 0;
         return item.is(crystallization ? ACTagRegistry.GALENA_GAUNTLET_CRYSTALLIZATION_ITEMS : (ACTagRegistry.MAGNETIC_ITEMS));
     }
 

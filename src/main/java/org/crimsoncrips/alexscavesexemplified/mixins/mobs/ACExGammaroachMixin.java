@@ -9,6 +9,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.level.Level;
 import org.crimsoncrips.alexscavesexemplified.AlexsCavesExemplified;
 import org.crimsoncrips.alexscavesexemplified.misc.ACExUtils;
@@ -42,17 +43,18 @@ public abstract class ACExGammaroachMixin extends PathfinderMob implements Targe
 
     @Override
     public boolean canTargetItem(ItemStack itemStack) {
-        return itemStack.isEdible();
+        return itemStack.getFoodProperties(this) != null;
     }
 
     public void onGetItem(ItemEntity itemEntity) {
         ACExUtils.awardAdvancement(itemEntity.getOwner(),"feed_roach","feedroach");
-        if (itemEntity.getItem().isEdible()) {
+        FoodProperties food = itemEntity.getItem().getFoodProperties(this);
+        if (food != null) {
             this.heal(5);
-            List<Pair<MobEffectInstance, Float>> test = Objects.requireNonNull(itemEntity.getItem().getFoodProperties(this)).getEffects();
+            List<FoodProperties.PossibleEffect> test = food.effects();
             if (!test.isEmpty()){
                 for (int i = 0; i < test.size(); i++){
-                    this.addEffect(new MobEffectInstance(test.get(i).getFirst()));
+                    this.addEffect(test.get(i).effect());
                 }
             }
         }

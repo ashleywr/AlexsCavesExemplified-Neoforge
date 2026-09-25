@@ -116,5 +116,11 @@ run/
 run-data/
 runs/
 
+# Local porting diagnostics
+/compile-errors*.txt
+/error-summary*.txt
+/runclient-*.txt
+/runserver-*.txt
+
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar

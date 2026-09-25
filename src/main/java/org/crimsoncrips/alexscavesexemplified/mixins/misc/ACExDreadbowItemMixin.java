@@ -12,6 +12,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import org.crimsoncrips.alexscavesexemplified.AlexsCavesExemplified;
+import org.crimsoncrips.alexscavesexemplified.misc.ACExUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -28,14 +29,14 @@ public abstract class ACExDreadbowItemMixin extends ProjectileWeaponItem {
     @Inject(method = "releaseUsing", at = @At(value = "INVOKE", target = "Lcom/github/alexmodguy/alexscaves/server/entity/item/DarkArrowEntity;setPerfectShot(Z)V"))
     private void alexsCavesExemplified$releaseUsing(ItemStack itemStack, Level level, LivingEntity livingEntity, int i1, CallbackInfo ci, @Local AbstractArrow abstractArrow, @Local DarkArrowEntity darkArrowEntity) {
         if(AlexsCavesExemplified.COMMON_CONFIG.DREAD_ADDAPTIONS_ENABLED.get()){
-            double power = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, itemStack);
-            int punch = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PUNCH_ARROWS, itemStack);
-            boolean flaming = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FLAMING_ARROWS, itemStack) == 1;
+            double power = ACExUtils.getEnchantmentLevel(itemStack, livingEntity, Enchantments.POWER);
+            int punch = ACExUtils.getEnchantmentLevel(itemStack, livingEntity, Enchantments.PUNCH);
+            boolean flaming = ACExUtils.getEnchantmentLevel(itemStack, livingEntity, Enchantments.FLAME) > 0;
 
             darkArrowEntity.setShadowArrowDamage((float) (darkArrowEntity.getShadowArrowDamage() * (power > 0 ? power : 1)));
-            darkArrowEntity.setKnockback(punch > 0 ? punch : darkArrowEntity.getKnockback());
+            if (punch > 0) darkArrowEntity.getPersistentData().putInt("ACExKnockback", punch);
             if (flaming) {
-                darkArrowEntity.setSecondsOnFire(100);
+                darkArrowEntity.igniteForSeconds(100.0F);
             }
         }
     }
@@ -43,27 +44,27 @@ public abstract class ACExDreadbowItemMixin extends ProjectileWeaponItem {
     @Inject(method = "onUseTick", at = @At(value = "INVOKE", target = "Lcom/github/alexmodguy/alexscaves/server/entity/item/DarkArrowEntity;setShadowArrowDamage(F)V"))
     private void alexsCavesExemplified$onUseTick(Level level, LivingEntity living, ItemStack itemStack, int timeUsing, CallbackInfo ci, @Local AbstractArrow abstractArrow, @Local DarkArrowEntity darkArrowEntity) {
         if(AlexsCavesExemplified.COMMON_CONFIG.DREAD_ADDAPTIONS_ENABLED.get()) {
-            int punch = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PUNCH_ARROWS, itemStack);
-            boolean flaming = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FLAMING_ARROWS, itemStack) == 1;
+            int punch = ACExUtils.getEnchantmentLevel(itemStack, living, Enchantments.PUNCH);
+            boolean flaming = ACExUtils.getEnchantmentLevel(itemStack, living, Enchantments.FLAME) > 0;
 
-            darkArrowEntity.setKnockback(punch > 0 ? punch : darkArrowEntity.getKnockback());
+            if (punch > 0) darkArrowEntity.getPersistentData().putInt("ACExKnockback", punch);
             if (flaming) {
-                darkArrowEntity.setSecondsOnFire(100);
+                darkArrowEntity.igniteForSeconds(100.0F);
             }
         }
     }
 
     @WrapWithCondition(method = "onUseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;shrink(I)V"))
-    private boolean alexsCavesExemplified$onUseTick1(ItemStack instance, int pDecrement,@Local(ordinal = 0) ItemStack bow) {
-        return !(EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, bow) == 1);
+    private boolean alexsCavesExemplified$onUseTick1(ItemStack instance, int pDecrement, @Local(ordinal = 0) ItemStack bow, @Local(argsOnly = true) LivingEntity living) {
+        return ACExUtils.getEnchantmentLevel(bow, living, Enchantments.INFINITY) <= 0;
     }
 
 
 
     @ModifyArg(method = "onUseTick", at = @At(value = "INVOKE", target = "Lcom/github/alexmodguy/alexscaves/server/entity/item/DarkArrowEntity;setShadowArrowDamage(F)V"))
-    private float alexsCavesExemplified$1(float f,@Local (ordinal = 0) ItemStack itemStack) {
+    private float alexsCavesExemplified$1(float f,@Local (ordinal = 0) ItemStack itemStack, @Local(argsOnly = true) LivingEntity living) {
         if(AlexsCavesExemplified.COMMON_CONFIG.DREAD_ADDAPTIONS_ENABLED.get()) {
-            double power = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, itemStack);
+            double power = ACExUtils.getEnchantmentLevel(itemStack, living, Enchantments.POWER);
             return (float) (f * (power > 0 ? power : 1));
         }
         return f;

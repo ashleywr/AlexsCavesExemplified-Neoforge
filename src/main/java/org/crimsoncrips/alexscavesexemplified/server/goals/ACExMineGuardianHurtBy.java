@@ -23,14 +23,10 @@ public class ACExMineGuardianHurtBy extends HurtByTargetGoal {
 
     @Override
     public void start() {
-        if (this.mob.getLastHurtByMob() instanceof Player player && !Objects.equals(player.getUUID().toString(), ((MineGuardianXtra)mineGuardian).alexsCavesExemplified$getOwner())) {
-            this.mob.setTarget(this.mob.getLastHurtByMob());
+        if (this.mob.getLastHurtByMob() instanceof Player player && Objects.equals(player.getUUID().toString(), ((MineGuardianXtra)mineGuardian).alexsCavesExemplified$getOwner())) {
+            this.mob.setTarget(null);
+            return;
         }
-        this.targetMob = this.mob.getTarget();
-        this.timestamp = this.mob.getLastHurtByMobTimestamp();
-        this.unseenMemoryTicks = 300;
-        if (this.alertSameType) {
-            this.alertOthers();
-        }
+        super.start();
     }
 }

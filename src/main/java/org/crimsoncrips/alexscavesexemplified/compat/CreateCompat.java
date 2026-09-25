@@ -3,9 +3,9 @@ package org.crimsoncrips.alexscavesexemplified.compat;
 import com.github.alexmodguy.alexscaves.server.block.ACBlockRegistry;
 import com.github.alexmodguy.alexscaves.server.entity.item.FrostmintSpearEntity;
 import com.github.alexmodguy.alexscaves.server.entity.util.FrostmintExplosion;
-import com.simibubi.create.AllFluids;
-import com.simibubi.create.AllItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -24,12 +24,13 @@ public class CreateCompat {
                 for (int z = -1; z < 2; z++) {
                     BlockPos icePos = new BlockPos(blockPos.getX() + x, blockPos.getY() + y , blockPos.getZ() + z);
                     BlockState blockState = level.getBlockState(icePos);
-                    if (blockState.getFluidState().getFluidType().equals(AllFluids.CHOCOLATE.getType())) {
+                    ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(blockState.getFluidState().getType());
+                    if (fluidId.equals(ResourceLocation.fromNamespaceAndPath("create", "chocolate"))) {
                         level.setBlock(icePos, ACBlockRegistry.BLOCK_OF_CHOCOLATE.get().defaultBlockState(), 3);
                         level.scheduleTick(icePos, blockState.getBlock(), 2);
                         frostmintSpear.discard();
                         explode(level,frostmintSpear);
-                    } else if (blockState.getFluidState().getFluidType().equals(AllFluids.HONEY.getType())) {
+                    } else if (fluidId.equals(ResourceLocation.fromNamespaceAndPath("create", "honey"))) {
                         level.setBlock(icePos, Blocks.HONEY_BLOCK.defaultBlockState(), 3);
                         level.scheduleTick(icePos, blockState.getBlock(), 2);
                         frostmintSpear.discard();
@@ -49,27 +50,31 @@ public class CreateCompat {
 
     public static int createDivingSuit(LivingEntity livingEntity){
         int i = 0;
-        if (livingEntity.getItemBySlot(EquipmentSlot.HEAD).is((Item) AllItems.COPPER_DIVING_HELMET.get())) {
+        if (hasItem(livingEntity, EquipmentSlot.HEAD, "create:copper_diving_helmet")) {
             i = i + 2;
         }
-        if (livingEntity.getItemBySlot(EquipmentSlot.FEET).is((Item) AllItems.COPPER_DIVING_BOOTS.get())) {
+        if (hasItem(livingEntity, EquipmentSlot.FEET, "create:copper_diving_boots")) {
             i = i + 1;
         }
-        if (livingEntity.getItemBySlot(EquipmentSlot.CHEST).is((Item) AllItems.COPPER_BACKTANK.get())) {
+        if (hasItem(livingEntity, EquipmentSlot.CHEST, "create:copper_backtank")) {
             i = i + 1;
         }
 
-        if (livingEntity.getItemBySlot(EquipmentSlot.HEAD).is((Item) AllItems.NETHERITE_DIVING_HELMET.get())) {
+        if (hasItem(livingEntity, EquipmentSlot.HEAD, "create:netherite_diving_helmet")) {
             i = i + 3;
         }
-        if (livingEntity.getItemBySlot(EquipmentSlot.FEET).is((Item) AllItems.NETHERITE_DIVING_BOOTS.get())) {
+        if (hasItem(livingEntity, EquipmentSlot.FEET, "create:netherite_diving_boots")) {
             i = i + 3;
         }
-        if (livingEntity.getItemBySlot(EquipmentSlot.FEET).is((Item) AllItems.NETHERITE_BACKTANK.get())) {
+        if (hasItem(livingEntity, EquipmentSlot.CHEST, "create:netherite_backtank")) {
             i = i + 5;
         }
 
         return i;
+    }
+
+    private static boolean hasItem(LivingEntity entity, EquipmentSlot slot, String id) {
+        return entity.getItemBySlot(slot).is(BuiltInRegistries.ITEM.get(ResourceLocation.parse(id)));
     }
 
 

@@ -2,6 +2,7 @@ package org.crimsoncrips.alexscavesexemplified.mixins.misc.projector;
 
 import com.github.alexmodguy.alexscaves.server.block.blockentity.HologramProjectorBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -31,27 +32,27 @@ public abstract class ACExHologramProjectorEntityMixin extends BlockEntity imple
 
 
 
-    @Inject(method = "load", at = @At(value = "TAIL"))
-    private void alexsCavesExemplified$load(CompoundTag tag, CallbackInfo ci) {
+    @Inject(method = "loadAdditional", at = @At(value = "TAIL"))
+    private void alexsCavesExemplified$load(CompoundTag tag, HolderLookup.Provider registries, CallbackInfo ci) {
         if (tag.contains("ProjectionScale")) {
             projectionScale = tag.getInt("ProjectionScale");
         }
     }
 
     @Inject(method = "saveAdditional", at = @At(value = "TAIL"))
-    private void alexsCavesExemplified$saveAdditional(CompoundTag tag, CallbackInfo ci) {
+    private void alexsCavesExemplified$saveAdditional(CompoundTag tag, HolderLookup.Provider registries, CallbackInfo ci) {
         tag.putInt("ProjectionScale", projectionScale);
     }
 
     @Inject(method = "onDataPacket", at = @At(value = "TAIL"),remap = false)
-    private void alexsCavesExemplified$onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, CallbackInfo ci) {
+    private void alexsCavesExemplified$onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries, CallbackInfo ci) {
         if (packet != null && packet.getTag() != null && packet.getTag().contains("ProjectionScale")) {
             projectionScale = packet.getTag().getInt("ProjectionScale");
         }
     }
 
     @Inject(method = "getUpdateTag", at = @At(value = "RETURN"))
-    private void alexsCavesExemplified$getUpdateTag(CallbackInfoReturnable<CompoundTag> cir) {
+    private void alexsCavesExemplified$getUpdateTag(HolderLookup.Provider registries, CallbackInfoReturnable<CompoundTag> cir) {
         CompoundTag tag = cir.getReturnValue();
 
         if (tag != null) {

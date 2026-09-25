@@ -3,37 +3,37 @@
     "sounds": [
       "alexscavesexemplified:entity/caramel_eat"
     ],
-    "subtitle": "subtitles.alexsmobsinteraction.caramel_eat"
+    "subtitle": "subtitle.alexscavesexemplified.sound.caramel_eat"
   },
   "pspspsps": {
     "sounds": [
       "alexscavesexemplified:entity/pspspsps"
     ],
-    "subtitle": "subtitles.alexsmobsinteraction.pspspsps"
+    "subtitle": "subtitle.alexscavesexemplified.sound.pspspsps"
   },
   "sweet_punished": {
     "sounds": [
       "alexscavesexemplified:entity/sweet_punished"
     ],
-    "subtitle": "subtitles.alexsmobsinteraction.sweet_punished"
+    "subtitle": "subtitle.alexscavesexemplified.sound.sweet_punished"
   },
   "tesla_exploding": {
     "sounds": [
       "alexscavesexemplified:block/tesla_exploding"
     ],
-    "subtitle": "subtitles.alexsmobsinteraction.tesla_exploding"
+    "subtitle": "subtitle.alexscavesexemplified.sound.tesla_exploding"
   },
   "tesla_fire": {
     "sounds": [
       "alexscavesexemplified:block/tesla_fire1",
       "alexscavesexemplified:block/tesla_fire2"
     ],
-    "subtitle": "subtitles.alexsmobsinteraction.tesla_fire"
+    "subtitle": "subtitle.alexscavesexemplified.sound.tesla_fire"
   },
   "tesla_powerup": {
     "sounds": [
       "alexscavesexemplified:block/tesla_powerup"
     ],
-    "subtitle": "subtitles.alexsmobsinteraction.tesla_powerup"
+    "subtitle": "subtitle.alexscavesexemplified.sound.tesla_powerup"
   }
 }

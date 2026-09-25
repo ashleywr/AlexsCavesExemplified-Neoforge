@@ -5,6 +5,7 @@ import com.github.alexmodguy.alexscaves.server.entity.util.GummyColors;
 import com.github.alexmodguy.alexscaves.server.item.ACItemRegistry;
 import com.github.alexmodguy.alexscaves.server.misc.ACSoundRegistry;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -17,7 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
 import org.crimsoncrips.alexscavesexemplified.AlexsCavesExemplified;
 import org.crimsoncrips.alexscavesexemplified.misc.ACExUtils;
@@ -76,7 +77,10 @@ public abstract class ACExGummybearMixin extends Animal {
                 this.jellybeansToMake = 0;
             }
             this.setDigesting(true);
-            this.digestEffect(PotionUtils.getPotion(itemstack));
+            PotionContents contents = itemstack.get(DataComponents.POTION_CONTENTS);
+            if (contents != null && contents.potion().isPresent()) {
+                this.digestEffect(contents.potion().get().value());
+            }
             this.usePlayerItem(player, hand, itemstack);
             if (!player.getAbilities().instabuild) {
                 player.addItem(new ItemStack(Items.GLASS_BOTTLE));

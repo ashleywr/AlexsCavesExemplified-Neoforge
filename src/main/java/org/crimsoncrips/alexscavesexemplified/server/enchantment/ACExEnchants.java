@@ -1,33 +1,22 @@
 package org.crimsoncrips.alexscavesexemplified.server.enchantment;
 
-
-import com.github.alexmodguy.alexscaves.server.item.GalenaGauntletItem;
-import com.github.alexmodguy.alexscaves.server.item.ResistorShieldItem;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import org.crimsoncrips.alexscavesexemplified.AlexsCavesExemplified;
 
-public class ACExEnchants {
+public final class ACExEnchants {
+    public static final ResourceKey<Enchantment> MAGNETICISM = ResourceKey.create(
+            Registries.ENCHANTMENT, AlexsCavesExemplified.prefix("magneticism"));
 
-
-    public static final DeferredRegister<Enchantment> DEF_REG;
-
-    public static final RegistryObject<Enchantment> MAGNETICISM;
-
-    public static final EnchantmentCategory MAGNETICISM_CATEGORY;
-
-    public ACExEnchants() {
+    private ACExEnchants() {
     }
 
-
-    static {
-        DEF_REG = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, "alexscavesexemplified");
-        MAGNETICISM_CATEGORY = EnchantmentCategory.create("magneticism_category", (item) -> {
-            return item instanceof GalenaGauntletItem || item instanceof ResistorShieldItem;
-        });
-        MAGNETICISM = DEF_REG.register("magneticism", () -> new ACExMagneticism(Enchantment.Rarity.RARE, MAGNETICISM_CATEGORY, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND));
+    public static int getMagneticismLevel(ItemStack stack, Entity entity) {
+        return stack.getEnchantmentLevel(entity.registryAccess()
+                .lookupOrThrow(Registries.ENCHANTMENT)
+                .getOrThrow(MAGNETICISM));
     }
 }

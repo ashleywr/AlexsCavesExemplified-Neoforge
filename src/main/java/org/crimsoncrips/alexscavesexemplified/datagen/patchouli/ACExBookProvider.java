@@ -11,7 +11,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.RegistryObject;
 import org.crimsoncrips.alexscavesexemplified.AlexsCavesExemplified;
 import org.crimsoncrips.alexscavesexemplified.server.blocks.ACExBlockRegistry;
 import org.crimsoncrips.alexscavesexemplified.server.item.ACExItemRegistry;
@@ -40,11 +40,11 @@ public class ACExBookProvider extends PGenBookProvider {
                                 lang.addCategory("general",
                                                 "General",
                                                 "General Additions",
-                                                new ResourceLocation("alexscavesexemplified:textures/gui/adv_icon/ace_adv_icon.png"),
+                                                ResourceLocation.parse("alexscavesexemplified:textures/gui/adv_icon/ace_adv_icon.png"),
                                                 category -> category.withSortnum(0))
                                         .addEntry("redo_spelunky",
                                                 "Redoable Spelunky",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "general"),
                                                 entry -> {
                                                     entry
@@ -57,7 +57,7 @@ public class ACExBookProvider extends PGenBookProvider {
                                                 })
                                         .addEntry("spelunkery_attempts",
                                                 "Spelunkery Attempts",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "general"),
                                                 entry -> {
                                                     entry
@@ -69,7 +69,7 @@ public class ACExBookProvider extends PGenBookProvider {
                                                 })
                                         .addEntry("charged_caves",
                                                 "Charged Caves",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "general"),
                                                 entry -> {
                                                     entry
@@ -81,7 +81,7 @@ public class ACExBookProvider extends PGenBookProvider {
                                                 })
                                         .addEntry("additional_flamability",
                                                 "Additional Flamability",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "general"),
                                                 entry -> {
                                                     entry
@@ -96,7 +96,7 @@ public class ACExBookProvider extends PGenBookProvider {
                                                 })
                                         .addEntry("forgiving_spelunking",
                                                 "Forgiving Spelunking",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "general"),
                                                 entry -> {
                                                     entry
@@ -109,7 +109,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("cavial_bonemeal",
                                                 "Cavial Bonemeal",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "general"),
                                                 entry -> {
                                                     entry
@@ -124,7 +124,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("liquid_replication",
                                                 "Liquid Replication",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "general"),
                                                 entry -> {
                                                     entry
@@ -147,7 +147,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("powered_locators",
                                                 "Powered Locators",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "general"),
                                                 entry -> {
                                                     entry
@@ -160,7 +160,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("add_targets",
                                                 "Add Targets",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "general"),
                                                 entry -> {
                                                     entry
@@ -176,13 +176,13 @@ public class ACExBookProvider extends PGenBookProvider {
                                 lang.addCategory("candy_cavity",
                                                 "Candy Cavity",
                                                 "Candy Cavity Additions",
-                                                new ResourceLocation("alexscaves:textures/misc/advancement/icon/candy_cavity.png"),
+                                                ResourceLocation.parse("alexscaves:textures/misc/advancement/icon/candy_cavity.png"),
                                                 category -> {category.withSortnum(1);
                                                 })
 
                                         .addEntry("candy_general",
                                                 "General",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "candy_cavity"),
                                                 entry -> {
                                                     entry
@@ -244,7 +244,7 @@ public class ACExBookProvider extends PGenBookProvider {
                                                                         .withTitle("Breaking Candy");
                                                             })
                                                             .addSpotlightPage(
-                                                                    item -> item.addTag(new ResourceLocation("alexscavesexemplified:gelatinable")),
+                                                                    item -> item.addTag(ResourceLocation.parse("alexscavesexemplified:gelatinable")),
                                                                     page -> page.withText(
                                                                             "To cook gelatin, drop in a dye of choice for the color, and a bone item," +
                                                                                     "inside a heated cauldron,and simply wait").withTitle(" ")
@@ -297,7 +297,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("caniac",
                                                 "Caniac",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "candy_cavity"),
                                                 entry -> {
                                                     entry
@@ -310,7 +310,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("candicorn",
                                                 "Candicorn",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "candy_cavity"),
                                                 entry -> {
                                                     entry
@@ -323,7 +323,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("caramel_cube",
                                                 "Caramel Cube",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "candy_cavity"),
                                                 entry -> {
                                                     entry
@@ -337,7 +337,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("gingerbread_man",
                                                 "Gingerbread Man",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "candy_cavity"),
                                                 entry -> {
                                                     entry
@@ -355,7 +355,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("gummy_bear",
                                                 "Gummybear",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "candy_cavity"),
                                                 entry -> {
                                                     entry
@@ -380,7 +380,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("gum_worm",
                                                 "Gum Worm",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "candy_cavity"),
                                                 entry -> {
                                                     entry
@@ -395,12 +395,12 @@ public class ACExBookProvider extends PGenBookProvider {
                                 lang.addCategory("forlorn_hollows",
                                                 "Forlorn Hollows",
                                                 "Forlorn Hollows Additions",
-                                                new ResourceLocation("alexscaves:textures/misc/advancement/icon/forlorn_hollows.png"),
+                                                ResourceLocation.parse("alexscaves:textures/misc/advancement/icon/forlorn_hollows.png"),
                                                 category -> {category.withSortnum(2);
                                                 })
                                         .addEntry("forlorn_general",
                                                 "General",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "forlorn_hollows"),
                                                 entry -> {
                                                     entry
@@ -451,7 +451,7 @@ public class ACExBookProvider extends PGenBookProvider {
                                                 })
                                         .addEntry("corrodent",
                                                 "Corrodent",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "forlorn_hollows"),
                                                 entry -> {
                                                     entry
@@ -471,7 +471,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("underzealot",
                                                 "Underzealot",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "forlorn_hollows"),
                                                 entry -> {
                                                     entry
@@ -496,7 +496,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("vesper",
                                                 "Vesper",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "forlorn_hollows"),
                                                 entry -> {
                                                     entry
@@ -517,7 +517,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("watcher",
                                                 "Watcher",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "forlorn_hollows"),
                                                 entry -> {
                                                     entry
@@ -533,12 +533,12 @@ public class ACExBookProvider extends PGenBookProvider {
                                 lang.addCategory("toxic_caves",
                                                 "Toxic Caves",
                                                 "Toxic Caves Addition",
-                                                new ResourceLocation("alexscaves:textures/misc/advancement/icon/toxic_caves.png"),
+                                                ResourceLocation.parse("alexscaves:textures/misc/advancement/icon/toxic_caves.png"),
                                                 category -> {category.withSortnum(3);
                                                 })
                                         .addEntry("toxic_general",
                                                 "General",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "toxic_caves"),
                                                 entry -> {
                                                     entry
@@ -597,7 +597,7 @@ public class ACExBookProvider extends PGenBookProvider {
                                                 })
                                         .addEntry("brainiac",
                                                 "Brainiac",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "toxic_caves"),
                                                 entry -> {
                                                     entry
@@ -613,7 +613,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("gammaroach",
                                                 "Gammaroach",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "toxic_caves"),
                                                 entry -> {
                                                     entry
@@ -629,7 +629,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("nucleeper",
                                                 "Nucleeper",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "toxic_caves"),
                                                 entry -> {
                                                     entry
@@ -651,7 +651,7 @@ public class ACExBookProvider extends PGenBookProvider {
                                                 })
                                         .addEntry("nucleeper",
                                                 "Nucleeper",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "toxic_caves"),
                                                 entry -> {
                                                     entry
@@ -673,7 +673,7 @@ public class ACExBookProvider extends PGenBookProvider {
                                                 })
                                         .addEntry("radgill",
                                                 "Radgill",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "toxic_caves"),
                                                 entry -> {
                                                     entry
@@ -687,7 +687,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("raycat",
                                                 "Raycat",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "toxic_caves"),
                                                 entry -> {
                                                     entry
@@ -701,7 +701,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("tremorzilla",
                                                 "Tremorzilla",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "toxic_caves"),
                                                 entry -> {
                                                     entry
@@ -724,12 +724,12 @@ public class ACExBookProvider extends PGenBookProvider {
                                 lang.addCategory("primordial_caves",
                                                 "Primordial Caves",
                                                 "Primordial Caves Addition",
-                                                new ResourceLocation("alexscaves:textures/misc/advancement/icon/primordial_caves.png"),
+                                                ResourceLocation.parse("alexscaves:textures/misc/advancement/icon/primordial_caves.png"),
                                                 category -> {category.withSortnum(4);
                                                 })
                                         .addEntry("primordial_general",
                                                 "General",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "primordial_caves"),
                                                 entry -> {
                                                     entry
@@ -786,7 +786,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("atlatitan",
                                                 "Atlatitan",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "primordial_caves"),
                                                 entry -> {
                                                     entry
@@ -804,7 +804,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("tremorsaurus",
                                                 "Tremorsaurus",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "primordial_caves"),
                                                 entry -> {
                                                     entry
@@ -820,12 +820,12 @@ public class ACExBookProvider extends PGenBookProvider {
                                 lang.addCategory("magnetic_caves",
                                                 "Magnetic Caves",
                                                 "Magnetic Caves Addition",
-                                                new ResourceLocation("alexscaves:textures/misc/advancement/icon/magnetic_caves.png"),
+                                                ResourceLocation.parse("alexscaves:textures/misc/advancement/icon/magnetic_caves.png"),
                                                 category -> {category.withSortnum(5);
                                                 })
                                         .addEntry("magnetic_general",
                                                 "General",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "magnetic_caves"),
                                                 entry -> {
                                                     entry
@@ -893,7 +893,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("boundroid",
                                                 "Boundroid",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "magnetic_caves"),
                                                 entry -> {
                                                     entry
@@ -909,7 +909,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("teletor",
                                                 "Teletor",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "magnetic_caves"),
                                                 entry -> {
                                                     entry
@@ -925,7 +925,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("notor",
                                                 "Notor",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "magnetic_caves"),
                                                 entry -> {
                                                     entry
@@ -942,12 +942,12 @@ public class ACExBookProvider extends PGenBookProvider {
                                 lang.addCategory("abyssal_chasm",
                                                 "Abyssal Chasm",
                                                 "Abyssal Chasm Addition",
-                                                new ResourceLocation("alexscaves:textures/misc/advancement/icon/abyssal_chasm.png"),
+                                                ResourceLocation.parse("alexscaves:textures/misc/advancement/icon/abyssal_chasm.png"),
                                                 category -> {category.withSortnum(6);
                                                 })
                                         .addEntry("abyssal_general",
                                                 "General",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "abyssal_chasm"),
                                                 entry -> {
                                                     entry
@@ -984,7 +984,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("sea_pig",
                                                 "Sea Pig",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "abyssal_chasm"),
                                                 entry -> {
                                                     entry
@@ -1000,7 +1000,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
                                         .addEntry("mine_guardian",
                                                 "Mine Guardian",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "abyssal_chasm"),
                                                 entry -> {
                                                     entry
@@ -1046,12 +1046,12 @@ public class ACExBookProvider extends PGenBookProvider {
                                 lang.addCategory("goofy_mode",
                                                 "Goofy Mode",
                                                 "TBD",
-                                                new ResourceLocation("alexscavesexemplified:textures/mob_effect/sugar_crash.png"),
+                                                ResourceLocation.parse("alexscavesexemplified:textures/mob_effect/sugar_crash.png"),
                                                 category -> {category.withSortnum(7);
                                                 })
                                         .addEntry("goofy_general",
                                                 "General",
-                                                new ResourceLocation("paper"),
+                                                ResourceLocation.parse("paper"),
                                                 new ResourceLocation(AlexsCavesExemplified.MODID, "goofy_mode"),
                                                 entry -> {
                                                 });
@@ -1066,7 +1066,7 @@ public class ACExBookProvider extends PGenBookProvider {
 
 public Consumer<PGenSpotlightPageBuilder.ItemBuilder> itemIconGiver(RegistryObject itemIcon){
     return item -> {
-        item.addItem(itemIcon.getKey() != null ? itemIcon.getKey().location() : new ResourceLocation("error"));
+        item.addItem(itemIcon.getKey() != null ? itemIcon.getKey().location() : ResourceLocation.parse("error"));
     };
 }
 

@@ -1,24 +1,9 @@
 package org.crimsoncrips.alexscavesexemplified;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
-public class ACExReflectionUtil {
-    public static Object createInstance(String className, Class<?>[] argTypes, Object[] args) {
-        try {
-            // Get the class object for the specified class name
-            Class<?> clazz = Class.forName(className);
-
-            Constructor<?> constructor = clazz.getDeclaredConstructor(argTypes);
-
-            // Make the constructor accessible
-            constructor.setAccessible(true);
-
-            // Create an instance of the class using the constructor
-            return constructor.newInstance(args);
-        } catch (Exception e) {
-            return null;
-        }
+public final class ACExReflectionUtil {
+    private ACExReflectionUtil() {
     }
 
     public static void setField(Object object, String name, Object value) {

@@ -14,18 +14,13 @@ import org.spongepowered.asm.mixin.Mixin;
 
 
 @Mixin(PingPongSpongeBlock.class)
-public class ACExPingPongSpongeMixin extends BushBlock implements BonemealableBlock {
-
-    public ACExPingPongSpongeMixin(Properties pProperties) {
-        super(pProperties);
-    }
+public abstract class ACExPingPongSpongeMixin implements BonemealableBlock {
 
     @Override
-    public boolean isValidBonemealTarget(LevelReader pLevel, BlockPos pPos, BlockState pState, boolean pIsClient) {
+    public boolean isValidBonemealTarget(LevelReader pLevel, BlockPos pPos, BlockState pState) {
         return pLevel.getBlockState(pPos.above()).is(Blocks.WATER) && pState.getValue(PingPongSpongeBlock.TOP);
     }
 
-    @Override
     public boolean isBonemealSuccess(Level pLevel, RandomSource pRandom, BlockPos pPos, BlockState pState) {
         return AlexsCavesExemplified.COMMON_CONFIG.CAVIAL_BONEMEAL_ENABLED.get();
     }

@@ -10,9 +10,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import org.crimsoncrips.alexscavesexemplified.misc.ACExUtils;
 import org.crimsoncrips.alexscavesexemplified.misc.interfaces.ConversionAmplified;
@@ -28,9 +31,9 @@ public abstract class ACExConversionCrucibleMixin extends BaseEntityBlock {
         super(pProperties);
     }
 
-    @ModifyReturnValue(method = "use", at = @At("RETURN"))
-    private InteractionResult alexsMobsInteraction$use(InteractionResult original,@Local Level worldIn,@Local BlockPos pos,@Local Player player,@Local InteractionHand handIn) {
-        ItemStack playerItem = player.getItemInHand(handIn);
+    @ModifyReturnValue(method = "useItemOn", at = @At("RETURN"))
+    private ItemInteractionResult alexsMobsInteraction$use(ItemInteractionResult original, ItemStack playerItem, BlockState state,
+                                                           Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (worldIn.getBlockEntity(pos) instanceof ConversionCrucibleBlockEntity crucible && !player.isShiftKeyDown() && !crucible.isWitchMode()) {
             if(playerItem.is(ACItemRegistry.RADIANT_ESSENCE.get()) && crucible.getConvertingToBiome() == null && !((ConversionAmplified)crucible).isOverdrived()){
                 crucible.setFilledLevel(1);
@@ -40,7 +43,7 @@ public abstract class ACExConversionCrucibleMixin extends BaseEntityBlock {
                 worldIn.playSound(null, pos, ACSoundRegistry.CONVERSION_CRUCIBLE_ACTIVATE.get(), SoundSource.BLOCKS);
                 crucible.markUpdated();
                 ((ConversionAmplified) crucible).setOverdrived(true);
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         }
         return original;

@@ -5,6 +5,7 @@
 
 package org.crimsoncrips.alexscavesexemplified.server.blocks.cauldron;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -16,6 +17,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.crimsoncrips.alexscavesexemplified.AlexsCavesExemplified;
 
 public class PurpleSodaCauldronBlock extends ACExCauldron {
+
+    public static final MapCodec<PurpleSodaCauldronBlock> CODEC = simpleCodec(PurpleSodaCauldronBlock::new);
+
+    @Override
+    protected MapCodec<? extends PurpleSodaCauldronBlock> codec() {
+        return CODEC;
+    }
 
 
     public PurpleSodaCauldronBlock(Properties p_153498_) {

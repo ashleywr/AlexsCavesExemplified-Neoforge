@@ -11,7 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.registries.RegistryObject;
+import java.util.function.Supplier;
 import org.crimsoncrips.alexscavesexemplified.AlexsCavesExemplified;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ACExDinosaurEggBlockMixin {
 
 
-    @Shadow @Final private RegistryObject<EntityType> births;
+    @Shadow @Final private Supplier<EntityType<?>> births;
 
     @Inject(method = "playerDestroy", at = @At("TAIL"))
     private void playerBreak(Level worldIn, Player player, BlockPos pos, BlockState state, BlockEntity te, ItemStack stack, CallbackInfo ci) {

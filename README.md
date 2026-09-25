@@ -1,28 +1,60 @@
-![Banner](https://cdn.modrinth.com/data/cached_images/c31a6bdf93d4b0a7d9be59fcb4d1d0d83c95a4df.png)
+# Alex's Caves Exemplified — NeoForge 1.21.1
 
-Alexs Caves Exemplified is an addon of [Alex's Caves](https://modrinth.com/mod/alexs-caves). In the hopes of breathing new life into the caves, and **_exemplifying_** the experiences of players.
+This branch ports Alex's Caves Exemplified to Minecraft 1.21.1 / NeoForge and targets Ashley's Alex's Caves fork. That fork includes Alex's Caves Tweak (TACT), and the addon has been tested with both mods active.
 
-By Adding 100+ varied features for the contents of the caves and its inhabitants. From Underzealot Trading, To Nuclear Mine Guardians, To A Gamma Tremorzilla.
+The addon expands every Alex's Caves biome with new creature behavior, item and block interactions, progression, effects, advancements, and several deliberately chaotic optional features. See [FEATURES.md](FEATURES.md) for the complete feature and setting inventory.
 
-All features can be accessed with the in-game wiki (MUST HAVE PATCHOULI TO WORK)
+## Requirements
 
-Every Single Feature in this mod is configurable and is located within config/alexscavesexemplified-general.toml
+- Minecraft 1.21.1
+- NeoForge 21.1.219 or newer 21.1.x
+- Java 21
+- Ashley's Alex's Caves fork 2.0.10.1 or newer
+- Citadel 2.7.1 or newer
 
-Shoutout to Reimnop for making a [Patchouli Datagen](https://github.com/Reimnop/PGen)!  
-Feel free to use it yourself
+TACT 1.5.3 is embedded in the targeted Alex's Caves fork. It is declared as an optional companion so the addon remains usable if that packaging changes.
 
-## Special Thanks to
+Optional integrations are detected at runtime: Alex's Mobs, Biomes O' Plenty, Create, Curious Lanterns/Curios, Farmer's Delight, Patchouli, and Supplementaries. Optional Alex's Mobs and Create mixins are skipped cleanly when those mods are absent.
 
-\-[Reimnop](https://modrinth.com/user/Reimnop) and [Drullkus](https://modrinth.com/user/Drullkus) for helping me code
+## Configuration
 
-\-[Alex](https://modrinth.com/user/AlexModGuy) and [Noon](https://modrinth.com/user/Noonyeyz) for the great mod
+The project already used NeoForge's native `ModConfigSpec`, which is a better fit here than adding Cloth Config: common settings load on both dedicated servers and clients, retain comments and validation, and require no additional dependency. The port fixes the category nesting and registers all three specs:
 
-\-[Original Gamma Tremorzilla Skin](https://www.curseforge.com/minecraft/texture-packs/alex-caves-legendary-tremorzilla-skin)
+- `config/alexscavesexemplified-general.toml` — 86 gameplay settings, including bounded numeric values
+- `config/alexscavesexemplified-targets.toml` — five independently controlled AI-target additions
+- `config/alexscavesexemplified-client.toml` — two client-only presentation settings
 
-\-[Theory Crafters](https://www.youtube.com/@CraftingTheories) Props for Alexs Caves theories for inspiration in ideas
+All normal gameplay additions default to enabled. Hardcore Magnerip and the nine Goofy Mode options default to disabled.
 
-## IMPORTANT NOTICE
+## Building
 
-**DO NOT REPORT ANY ISSUES SPECIFIC TO THE MOD TO ALEX'S TEAM GITHUB REPORT THEM IN**\-[HERE](https://github.com/CrimsonCrips/AlexsCavesExemplified/issues)
+The build intentionally compiles against the sibling local fork:
 
-[![](https://cdn.modrinth.com/data/cached_images/9ed54d41f40b03d6266de16ef110291e86e2c81f.png)](https://discord.gg/S9kUFsmw2f)
+```text
+Minecraft Mods/
+├─ AlexsCaves/
+└─ AlexsCavesExemplified-Neoforge/
+   └─ repo/
+```
+
+Build Alex's Caves first so `AlexsCaves/build/libs/alexscaves-2.0.10.1.jar` exists, then run:
+
+```powershell
+./gradlew build
+```
+
+The addon JAR is written to `build/libs/`.
+
+## In-game guide
+
+With Patchouli installed, the ACE Wiki documents the additions in game. The starter-book grant and the reminder can be disabled independently.
+
+Please report addon-specific issues to the [Alex's Caves Exemplified issue tracker](https://github.com/CrimsonCrips/AlexsCavesExemplified/issues), not to the Alex's Caves team.
+
+## Credits
+
+- Reimnop and Drullkus for development help
+- AlexModGuy and Noonyeyz for Alex's Caves
+- Reimnop's Patchouli data-generation work
+- The original Gamma Tremorzilla resource-pack artist
+- Crafting Theories for feature inspiration

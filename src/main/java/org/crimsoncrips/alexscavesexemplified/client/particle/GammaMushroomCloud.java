@@ -26,8 +26,8 @@ import net.minecraft.world.phys.Vec3;
 
 public class GammaMushroomCloud extends MushroomCloudParticle {
 
-   private static final ResourceLocation GAMMA = new ResourceLocation("alexscavesexemplified:textures/entity/gamma_mushroom_cloud.png");
-    private static final ResourceLocation GAMMA_GLOW = new ResourceLocation("alexscavesexemplified:textures/entity/gamma_mushroom_cloud_glow.png");
+   private static final ResourceLocation GAMMA = ResourceLocation.parse("alexscavesexemplified:textures/entity/gamma_mushroom_cloud.png");
+    private static final ResourceLocation GAMMA_GLOW = ResourceLocation.parse("alexscavesexemplified:textures/entity/gamma_mushroom_cloud_glow.png");
 
     protected GammaMushroomCloud(ClientLevel level, double x, double y, double z, float scale, boolean pink) {
         super(level, x, y, z, scale, pink);
@@ -99,11 +99,11 @@ public class GammaMushroomCloud extends MushroomCloudParticle {
         float alpha = left <= 10 ? (float)left / 10.0F : 1.0F;
         MODEL.animateParticle((float)this.age, ACMath.smin(life, 1.0F, 0.5F), partialTick);
         VertexConsumer baseConsumer = multibuffersource$buffersource.getBuffer(RenderType.entityTranslucent(GAMMA));
-        MODEL.renderToBuffer(posestack, baseConsumer, this.getLightColor(partialTick), OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, alpha);
+        MODEL.renderToBuffer(posestack, baseConsumer, this.getLightColor(partialTick), OverlayTexture.NO_OVERLAY, net.minecraft.util.FastColor.ARGB32.colorFromFloat(alpha, 1.0F, 1.0F, 1.0F));
         VertexConsumer glowConsumer1 = multibuffersource$buffersource.getBuffer(ACRenderTypes.getEyesAlphaEnabled(GAMMA));
-        MODEL.renderToBuffer(posestack, glowConsumer1, 240, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, alpha);
+        MODEL.renderToBuffer(posestack, glowConsumer1, 240, OverlayTexture.NO_OVERLAY, net.minecraft.util.FastColor.ARGB32.colorFromFloat(alpha, 1.0F, 1.0F, 1.0F));
         VertexConsumer glowConsumer2 = multibuffersource$buffersource.getBuffer(ACRenderTypes.getEyesAlphaEnabled(GAMMA_GLOW));
-        MODEL.renderToBuffer(posestack, glowConsumer2, 240, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, glowLife * alpha);
+        MODEL.renderToBuffer(posestack, glowConsumer2, 240, OverlayTexture.NO_OVERLAY, net.minecraft.util.FastColor.ARGB32.colorFromFloat(glowLife * alpha, 1.0F, 1.0F, 1.0F));
         multibuffersource$buffersource.endBatch();
         posestack.popPose();
     }

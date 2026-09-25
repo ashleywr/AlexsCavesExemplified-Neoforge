@@ -7,7 +7,7 @@ import com.github.alexmodguy.alexscaves.server.misc.ACSoundRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -31,10 +31,9 @@ public abstract class ACExHologramProjectorMixin extends BaseEntityBlock {
         super(pProperties);
     }
 
-    @Inject(method = "use", at = @At(value = "TAIL"))
-    private void alexsCavesExemplified$use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit, CallbackInfoReturnable<InteractionResult> cir) {
+    @Inject(method = "useItemOn", at = @At(value = "TAIL"))
+    private void alexsCavesExemplified$use(ItemStack heldItem, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit, CallbackInfoReturnable<ItemInteractionResult> cir) {
         if (worldIn.getBlockEntity(pos) instanceof HologramProjectorBlockEntity projectorBlockEntity && AlexsCavesExemplified.COMMON_CONFIG.SCALABLE_HOLOGRAM_ENABLED.get() && !player.isShiftKeyDown()) {
-            ItemStack heldItem = player.getItemInHand(handIn);
             ACExBaseInterface accesor = (ACExBaseInterface)projectorBlockEntity;
             if (heldItem.is(ACItemRegistry.SCARLET_NEODYMIUM_INGOT.get())) {
                 worldIn.playSound((Player) null, pos, ACSoundRegistry.HOLOGRAM_STOP.get(), SoundSource.BLOCKS);

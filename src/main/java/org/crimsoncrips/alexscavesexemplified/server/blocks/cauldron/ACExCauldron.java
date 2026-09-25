@@ -30,10 +30,10 @@ import org.crimsoncrips.alexscavesexemplified.AlexsCavesExemplified;
 import org.crimsoncrips.alexscavesexemplified.misc.ACExUtils;
 import org.crimsoncrips.alexscavesexemplified.server.blocks.ACExBlockRegistry;
 
-public class ACExCauldron extends AbstractCauldronBlock {
+public abstract class ACExCauldron extends AbstractCauldronBlock {
 
 
-    public ACExCauldron(Properties pProperties, Map<Item, CauldronInteraction> pInteractions) {
+    public ACExCauldron(Properties pProperties, CauldronInteraction.InteractionMap pInteractions) {
         super(pProperties, pInteractions);
     }
 

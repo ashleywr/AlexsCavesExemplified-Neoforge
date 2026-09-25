@@ -2,7 +2,7 @@ package org.crimsoncrips.alexscavesexemplified.server.effect;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.brewing.BrewingRecipe;
+import net.neoforged.neoforge.common.brewing.BrewingRecipe;
 
 import javax.annotation.Nonnull;
 
@@ -30,7 +30,7 @@ public class ACExBrewingRecipes extends BrewingRecipe {
                 return stack.isEmpty();
             } else {
                 for (ItemStack itemstack : matchingStacks) {
-                    if (ItemStack.isSameItem(stack, itemstack) && ItemStack.isSameItemSameTags(itemstack, stack)) {
+                    if (ItemStack.isSameItem(stack, itemstack) && ItemStack.isSameItemSameComponents(itemstack, stack)) {
                         return true;
                     }
                 }

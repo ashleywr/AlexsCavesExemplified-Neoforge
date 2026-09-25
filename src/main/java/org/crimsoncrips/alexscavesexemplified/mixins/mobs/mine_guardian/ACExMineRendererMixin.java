@@ -26,18 +26,18 @@ import static net.minecraft.client.renderer.texture.OverlayTexture.NO_OVERLAY;
 @Mixin(MineGuardianRenderer.class)
 public abstract class ACExMineRendererMixin extends MobRenderer<MineGuardianEntity, MineGuardianModel> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation("alexscaves:textures/entity/mine_guardian.png");
-    private static final ResourceLocation TEXTURE_SLEEPING = new ResourceLocation("alexscaves:textures/entity/mine_guardian_sleeping.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.parse("alexscaves:textures/entity/mine_guardian.png");
+    private static final ResourceLocation TEXTURE_SLEEPING = ResourceLocation.parse("alexscaves:textures/entity/mine_guardian_sleeping.png");
 
-    private static final ResourceLocation TEXTURE_NOON = new ResourceLocation("alexscavesexemplified:textures/entity/mine_guardian/noon_guardian.png");
-    private static final ResourceLocation TEXTURE_NOON_SLEEPING = new ResourceLocation("alexscavesexemplified:textures/entity/mine_guardian/noon_guardian_sleeping.png");
-    private static final ResourceLocation TEXTURE_NOON_ACTIVE = new ResourceLocation("alexscavesexemplified:textures/entity/mine_guardian/noon_guardian_active.png");
+    private static final ResourceLocation TEXTURE_NOON = ResourceLocation.parse("alexscavesexemplified:textures/entity/mine_guardian/noon_guardian.png");
+    private static final ResourceLocation TEXTURE_NOON_SLEEPING = ResourceLocation.parse("alexscavesexemplified:textures/entity/mine_guardian/noon_guardian_sleeping.png");
+    private static final ResourceLocation TEXTURE_NOON_ACTIVE = ResourceLocation.parse("alexscavesexemplified:textures/entity/mine_guardian/noon_guardian_active.png");
 
-    private static final ResourceLocation TEXTURE_AE_NUCLEAR = new ResourceLocation("alexscavesexemplified:textures/entity/mine_guardian/nuclear_ae_guardian.png");
-    private static final ResourceLocation TEXTURE_AE_NUCLEAR_SLEEPING = new ResourceLocation("alexscavesexemplified:textures/entity/mine_guardian/nuclear_ae_guardian_sleeping.png");
+    private static final ResourceLocation TEXTURE_AE_NUCLEAR = ResourceLocation.parse("alexscavesexemplified:textures/entity/mine_guardian/nuclear_ae_guardian.png");
+    private static final ResourceLocation TEXTURE_AE_NUCLEAR_SLEEPING = ResourceLocation.parse("alexscavesexemplified:textures/entity/mine_guardian/nuclear_ae_guardian_sleeping.png");
 
-    private static final ResourceLocation TEXTURE_JESSE_NUCLEAR = new ResourceLocation("alexscavesexemplified:textures/entity/mine_guardian/nuclear_jesse_guardian.png");
-    private static final ResourceLocation TEXTURE_JESSE_NUCLEAR_SLEEPING = new ResourceLocation("alexscavesexemplified:textures/entity/mine_guardian/nuclear_jesse_guardian_sleeping.png");
+    private static final ResourceLocation TEXTURE_JESSE_NUCLEAR = ResourceLocation.parse("alexscavesexemplified:textures/entity/mine_guardian/nuclear_jesse_guardian.png");
+    private static final ResourceLocation TEXTURE_JESSE_NUCLEAR_SLEEPING = ResourceLocation.parse("alexscavesexemplified:textures/entity/mine_guardian/nuclear_jesse_guardian_sleeping.png");
 
 
     public ACExMineRendererMixin(EntityRendererProvider.Context pContext, MineGuardianModel pModel, float pShadowRadius) {
@@ -45,39 +45,39 @@ public abstract class ACExMineRendererMixin extends MobRenderer<MineGuardianEnti
     }
 
     private static void nuclearShineOrigin(VertexConsumer p_114220_, Matrix4f p_114221_, Matrix3f p_114092_, float xOffset, float yOffset) {
-        p_114220_.vertex(p_114221_, 0.0F, 0.0F, 0.0F).color(10, 240, 50, 255).uv(xOffset + 0.5F, yOffset).overlayCoords(NO_OVERLAY).uv2(240).normal(p_114092_, 0.0F, 1.0F, 0.0F).endVertex();
+        p_114220_.addVertex(p_114221_, 0.0F, 0.0F, 0.0F).setColor(10, 240, 50, 255).setUv(xOffset + 0.5F, yOffset).setOverlay(NO_OVERLAY).setLight(240).setNormal(0.0F, 1.0F, 0.0F);
     }
 
     private static void nuclearShineLeft(VertexConsumer p_114215_, Matrix4f p_114216_, Matrix3f p_114092_, float p_114217_, float p_114218_, float xOffset, float yOffset) {
-        p_114215_.vertex(p_114216_, -ACMath.HALF_SQRT_3 * p_114218_, p_114217_, 0).color(15, 250, 59, 0).uv(xOffset, yOffset).overlayCoords(NO_OVERLAY).uv2(240).normal(p_114092_, 0.0F, -1.0F, 0.0F).endVertex();
+        p_114215_.addVertex(p_114216_, -ACMath.HALF_SQRT_3 * p_114218_, p_114217_, 0).setColor(15, 250, 59, 0).setUv(xOffset, yOffset).setOverlay(NO_OVERLAY).setLight(240).setNormal(0.0F, -1.0F, 0.0F);
     }
 
     private static void nuclearShineRight(VertexConsumer p_114224_, Matrix4f p_114225_, Matrix3f p_114092_, float p_114226_, float p_114227_, float xOffset, float yOffset) {
-        p_114224_.vertex(p_114225_, ACMath.HALF_SQRT_3 * p_114227_, p_114226_, 0).color(15, 250, 59, 0).uv(xOffset, yOffset).overlayCoords(NO_OVERLAY).uv2(240).normal(p_114092_, 0.0F, -1.0F, 0.0F).endVertex();
+        p_114224_.addVertex(p_114225_, ACMath.HALF_SQRT_3 * p_114227_, p_114226_, 0).setColor(15, 250, 59, 0).setUv(xOffset, yOffset).setOverlay(NO_OVERLAY).setLight(240).setNormal(0.0F, -1.0F, 0.0F);
     }
 
     private static void noonShineOrigin(VertexConsumer p_114220_, Matrix4f p_114221_, Matrix3f p_114092_, float xOffset, float yOffset) {
-        p_114220_.vertex(p_114221_, 0.0F, 0.0F, 0.0F).color(60, 210, 230, 255).uv(xOffset + 0.5F, yOffset).overlayCoords(NO_OVERLAY).uv2(240).normal(p_114092_, 0.0F, 1.0F, 0.0F).endVertex();
+        p_114220_.addVertex(p_114221_, 0.0F, 0.0F, 0.0F).setColor(60, 210, 230, 255).setUv(xOffset + 0.5F, yOffset).setOverlay(NO_OVERLAY).setLight(240).setNormal(0.0F, 1.0F, 0.0F);
     }
 
     private static void noonShineLeft(VertexConsumer p_114215_, Matrix4f p_114216_, Matrix3f p_114092_, float p_114217_, float p_114218_, float xOffset, float yOffset) {
-        p_114215_.vertex(p_114216_, -ACMath.HALF_SQRT_3 * p_114218_, p_114217_, 0).color(64, 233, 255, 0).uv(xOffset, yOffset).overlayCoords(NO_OVERLAY).uv2(240).normal(p_114092_, 0.0F, -1.0F, 0.0F).endVertex();
+        p_114215_.addVertex(p_114216_, -ACMath.HALF_SQRT_3 * p_114218_, p_114217_, 0).setColor(64, 233, 255, 0).setUv(xOffset, yOffset).setOverlay(NO_OVERLAY).setLight(240).setNormal(0.0F, -1.0F, 0.0F);
     }
 
     private static void noonShineRight(VertexConsumer p_114224_, Matrix4f p_114225_, Matrix3f p_114092_, float p_114226_, float p_114227_, float xOffset, float yOffset) {
-        p_114224_.vertex(p_114225_, ACMath.HALF_SQRT_3 * p_114227_, p_114226_, 0).color(64, 233, 255, 0).uv(xOffset, yOffset).overlayCoords(NO_OVERLAY).uv2(240).normal(p_114092_, 0.0F, -1.0F, 0.0F).endVertex();
+        p_114224_.addVertex(p_114225_, ACMath.HALF_SQRT_3 * p_114227_, p_114226_, 0).setColor(64, 233, 255, 0).setUv(xOffset, yOffset).setOverlay(NO_OVERLAY).setLight(240).setNormal(0.0F, -1.0F, 0.0F);
     }
 
     private static void ownedShineOrigin(VertexConsumer p_114220_, Matrix4f p_114221_, Matrix3f p_114092_, float xOffset, float yOffset) {
-        p_114220_.vertex(p_114221_, 0.0F, 0.0F, 0.0F).color(255, 255, 255, 255).uv(xOffset + 0.5F, yOffset).overlayCoords(NO_OVERLAY).uv2(240).normal(p_114092_, 0.0F, 1.0F, 0.0F).endVertex();
+        p_114220_.addVertex(p_114221_, 0.0F, 0.0F, 0.0F).setColor(255, 255, 255, 255).setUv(xOffset + 0.5F, yOffset).setOverlay(NO_OVERLAY).setLight(240).setNormal(0.0F, 1.0F, 0.0F);
     }
 
     private static void ownedShineLeft(VertexConsumer p_114215_, Matrix4f p_114216_, Matrix3f p_114092_, float p_114217_, float p_114218_, float xOffset, float yOffset) {
-        p_114215_.vertex(p_114216_, -ACMath.HALF_SQRT_3 * p_114218_, p_114217_, 0).color(255, 255, 255, 0).uv(xOffset, yOffset).overlayCoords(NO_OVERLAY).uv2(240).normal(p_114092_, 0.0F, -1.0F, 0.0F).endVertex();
+        p_114215_.addVertex(p_114216_, -ACMath.HALF_SQRT_3 * p_114218_, p_114217_, 0).setColor(255, 255, 255, 0).setUv(xOffset, yOffset).setOverlay(NO_OVERLAY).setLight(240).setNormal(0.0F, -1.0F, 0.0F);
     }
 
     private static void ownedShineRight(VertexConsumer p_114224_, Matrix4f p_114225_, Matrix3f p_114092_, float p_114226_, float p_114227_, float xOffset, float yOffset) {
-        p_114224_.vertex(p_114225_, ACMath.HALF_SQRT_3 * p_114227_, p_114226_, 0).color(255, 255, 255, 0).uv(xOffset, yOffset).overlayCoords(NO_OVERLAY).uv2(240).normal(p_114092_, 0.0F, -1.0F, 0.0F).endVertex();
+        p_114224_.addVertex(p_114225_, ACMath.HALF_SQRT_3 * p_114227_, p_114226_, 0).setColor(255, 255, 255, 0).setUv(xOffset, yOffset).setOverlay(NO_OVERLAY).setLight(240).setNormal(0.0F, -1.0F, 0.0F);
     }
 
     @Override

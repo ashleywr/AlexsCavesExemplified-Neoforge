@@ -22,13 +22,13 @@ public abstract class ACExMineRendererRenderMixin extends RenderLayer<MineGuardi
         super(pRenderer);
     }
 
-    private static final ResourceLocation TEXTURE_EYE = new ResourceLocation("alexscaves:textures/entity/mine_guardian_eye.png");
-    private static final ResourceLocation TEXTURE_EXPLODE = new ResourceLocation("alexscaves:textures/entity/mine_guardian_explode.png");
-    private static final ResourceLocation TEXTURE_NUCLEAR_EYE = new ResourceLocation("alexscavesexemplified:textures/entity/mine_guardian/nuclear_guardian_eye.png");
-    private static final ResourceLocation TEXTURE_NUCLEAR_EXPLODE = new ResourceLocation("alexscavesexemplified:textures/entity/mine_guardian/nuclear_guardian_explode.png");
-    private static final ResourceLocation TEXTURE_NUCLEAR_AE = new ResourceLocation("alexscavesexemplified:textures/entity/mine_guardian/nuclear_guardian_glow.png");
+    private static final ResourceLocation TEXTURE_EYE = ResourceLocation.parse("alexscaves:textures/entity/mine_guardian_eye.png");
+    private static final ResourceLocation TEXTURE_EXPLODE = ResourceLocation.parse("alexscaves:textures/entity/mine_guardian_explode.png");
+    private static final ResourceLocation TEXTURE_NUCLEAR_EYE = ResourceLocation.parse("alexscavesexemplified:textures/entity/mine_guardian/nuclear_guardian_eye.png");
+    private static final ResourceLocation TEXTURE_NUCLEAR_EXPLODE = ResourceLocation.parse("alexscavesexemplified:textures/entity/mine_guardian/nuclear_guardian_explode.png");
+    private static final ResourceLocation TEXTURE_NUCLEAR_AE = ResourceLocation.parse("alexscavesexemplified:textures/entity/mine_guardian/nuclear_guardian_glow.png");
 
-    private static final ResourceLocation TEXTURE_OWNED = new ResourceLocation("alexscavesexemplified:textures/entity/mine_guardian/texture_owned_eye.png");
+    private static final ResourceLocation TEXTURE_OWNED = ResourceLocation.parse("alexscavesexemplified:textures/entity/mine_guardian/texture_owned_eye.png");
 
     public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, MineGuardianEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         MineGuardianXtra accesor = (MineGuardianXtra) entitylivingbaseIn;
@@ -36,16 +36,16 @@ public abstract class ACExMineRendererRenderMixin extends RenderLayer<MineGuardi
         float explodeProgress = entitylivingbaseIn.getExplodeProgress(partialTicks);
         if (!entitylivingbaseIn.isEyeClosed() && accesor.alexsCavesExemplified$getVariant() != -1) {
             VertexConsumer ivertexbuilder1 = bufferIn.getBuffer(RenderType.eyes(Minecraft.getInstance().player.getStringUUID().equals(accesor.alexsCavesExemplified$getOwner()) ? TEXTURE_OWNED : accesor.alexsCavesExemplified$getVariant() > 0 ? TEXTURE_NUCLEAR_EYE : TEXTURE_EYE));
-            ((MineGuardianModel)this.getParentModel()).renderToBuffer(poseStack, ivertexbuilder1, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);
+            ((MineGuardianModel)this.getParentModel()).renderToBuffer(poseStack, ivertexbuilder1, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), net.minecraft.util.FastColor.ARGB32.colorFromFloat(1.0F, 1.0F, 1.0F, 1.0F));
         }
 
         VertexConsumer ivertexbuilder4 = bufferIn.getBuffer(ACRenderTypes.getEyesAlphaEnabled(accesor.alexsCavesExemplified$getVariant() > 0 ? TEXTURE_NUCLEAR_EXPLODE : TEXTURE_EXPLODE));
-        ((MineGuardianModel)this.getParentModel()).renderToBuffer(poseStack, ivertexbuilder4, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), 1.0F, 1.0F, 1.0F, explodeProgress);
+        ((MineGuardianModel)this.getParentModel()).renderToBuffer(poseStack, ivertexbuilder4, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), net.minecraft.util.FastColor.ARGB32.colorFromFloat(explodeProgress, 1.0F, 1.0F, 1.0F));
 
 
         if (accesor.alexsCavesExemplified$getVariant() == 1) {
             VertexConsumer nuclearGlowing = bufferIn.getBuffer(ACRenderTypes.getEyesAlphaEnabled(TEXTURE_NUCLEAR_AE));
-            ((MineGuardianModel)this.getParentModel()).renderToBuffer(poseStack, nuclearGlowing, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), 1.0F, 1.0F, 1.0F, 0.4F + explodeProgress);
+            ((MineGuardianModel)this.getParentModel()).renderToBuffer(poseStack, nuclearGlowing, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), net.minecraft.util.FastColor.ARGB32.colorFromFloat(0.4F + explodeProgress, 1.0F, 1.0F, 1.0F));
         }
 
 

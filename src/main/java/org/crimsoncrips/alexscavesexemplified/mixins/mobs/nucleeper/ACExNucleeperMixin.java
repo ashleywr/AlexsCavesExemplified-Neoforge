@@ -12,6 +12,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.monster.Monster;
@@ -50,8 +51,8 @@ public abstract class ACExNucleeperMixin extends Monster implements NucleeperXtr
     private static final EntityDataAccessor<Boolean> DEFUSED = SynchedEntityData.defineId(NucleeperEntity.class, EntityDataSerializers.BOOLEAN);
 
     @Inject(method = "defineSynchedData", at = @At("TAIL"))
-    private void alexsCavesExemplified$defineSynchedData(CallbackInfo ci) {
-        this.entityData.define(DEFUSED, false);
+    private void alexsCavesExemplified$defineSynchedData(SynchedEntityData.Builder builder, CallbackInfo ci) {
+        builder.define(DEFUSED, false);
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
@@ -75,7 +76,7 @@ public abstract class ACExNucleeperMixin extends Monster implements NucleeperXtr
             setDefused(true);
             player.swing(hand);
             if (!player.isCreative()) {
-                player.getItemInHand(hand).hurtAndBreak(1, player, (p_233654_0_) -> {});
+                player.getItemInHand(hand).hurtAndBreak(1, player, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
             }
 
         }

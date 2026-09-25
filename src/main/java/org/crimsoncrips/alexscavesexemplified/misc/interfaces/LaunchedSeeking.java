@@ -1,5 +1,7 @@
 package org.crimsoncrips.alexscavesexemplified.misc.interfaces;
 
+import net.minecraft.world.entity.Entity;
+
 public interface LaunchedSeeking {
 
     int getLaunchedTargetID();
@@ -11,5 +13,9 @@ public interface LaunchedSeeking {
     void setSpinAngle(float var);
 
     void setStopSeeking(boolean var);
+
+    void resetForLaunch();
+
+    boolean canLaunchAt(Entity entity);
 
 }

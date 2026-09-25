@@ -11,7 +11,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.crimsoncrips.alexscavesexemplified.AlexsCavesExemplified;
 import org.crimsoncrips.alexscavesexemplified.server.blocks.ACExBlockRegistry;
 
@@ -168,7 +168,7 @@ public class ACExBlockTagGenerator extends IntrinsicHolderTagsProvider<Block> {
 				ACBlockRegistry.COOKED_DINOSAUR_CHOP.get(),
 				ACBlockRegistry.DINOSAUR_CHOP.get()
 		)
-				.addOptional(new ResourceLocation("cavedelight:roasted_dino_chop"));
+				.addOptional(ResourceLocation.parse("cavedelight:roasted_dino_chop"));
 
 		tag(RADIOACTIVE).add(
 				ACBlockRegistry.RADROCK_URANIUM_ORE.get(),

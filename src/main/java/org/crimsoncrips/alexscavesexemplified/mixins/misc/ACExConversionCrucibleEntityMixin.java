@@ -8,6 +8,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntitySelector;
@@ -115,12 +116,12 @@ public abstract class ACExConversionCrucibleEntityMixin extends BlockEntity impl
     }
 
     @Inject(method = "loadAdditional", at = @At(value = "TAIL"),remap = false)
-    private void alexsCavesExemplified$loadAdditional(CompoundTag compound, CallbackInfo ci) {
+    private void alexsCavesExemplified$loadAdditional(CompoundTag compound, HolderLookup.Provider registries, CallbackInfo ci) {
         this.overdrived = compound.getBoolean("Overdrived");
     }
 
     @Inject(method = "saveAdditional", at = @At(value = "TAIL"))
-    private void alexsCavesExemplified$saveAdditional(CompoundTag compound, CallbackInfo ci) {
+    private void alexsCavesExemplified$saveAdditional(CompoundTag compound, HolderLookup.Provider registries, CallbackInfo ci) {
         compound.putBoolean("Overdrived", this.overdrived);
     }
 

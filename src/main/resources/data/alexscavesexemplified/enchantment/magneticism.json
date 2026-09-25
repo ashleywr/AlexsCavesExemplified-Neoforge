@@ -1,0 +1,21 @@
+{
+  "description": {
+    "translate": "enchantment.alexscavesexemplified.magneticism"
+  },
+  "supported_items": "#alexscavesexemplified:enchantable/magneticism",
+  "weight": 5,
+  "max_level": 1,
+  "min_cost": {
+    "base": 10,
+    "per_level_above_first": 3
+  },
+  "max_cost": {
+    "base": 23,
+    "per_level_above_first": 3
+  },
+  "anvil_cost": 2,
+  "slots": [
+    "mainhand",
+    "offhand"
+  ]
+}

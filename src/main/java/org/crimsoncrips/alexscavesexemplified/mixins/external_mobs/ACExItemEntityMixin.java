@@ -8,7 +8,9 @@ import com.github.alexmodguy.alexscaves.server.item.SackOfSatingItem;
 import com.github.alexmodguy.alexscaves.server.misc.ACAdvancementTriggerRegistry;
 import com.github.alexmodguy.alexscaves.server.misc.ACTagRegistry;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -16,6 +18,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -60,8 +63,7 @@ public abstract class ACExItemEntityMixin extends Entity {
         ItemEntity itemEntity = (ItemEntity)(Object)this;
         if (!this.level().isClientSide && AlexsCavesExemplified.COMMON_CONFIG.TUNED_SATING_ENABLED.get()) {
             ItemStack itemstack = itemEntity.getItem();
-            int hook = net.minecraftforge.event.ForgeEventFactory.onItemPickup(itemEntity, pEntity);
-            if (this.pickupDelay <= 0 && (hook == 0 || itemstack.getCount() <= 0) && itemstack.isEdible() && !pEntity.getInventory().add(itemstack)) {
+            if (this.pickupDelay <= 0 && itemstack.getFoodProperties(pEntity) != null && !pEntity.getInventory().add(itemstack)) {
                 Inventory inv = pEntity.getInventory();
                 for (int i = 0; i < inv.getContainerSize(); i++) {
                     ItemStack current = inv.getItem(i);
@@ -74,7 +76,7 @@ public abstract class ACExItemEntityMixin extends Entity {
 
                         FoodProperties foodProperties = itemstack.getFoodProperties(pEntity);
                         if(foodProperties != null && !itemstack.is(ACTagRegistry.RESTRICTED_FROM_SACK_OF_SATING)){
-                            foodAmount = foodProperties.getNutrition() * itemstack.getCount();
+                            foodAmount = foodProperties.nutrition() * itemstack.getCount();
                         } else foodAmount = 0;
 
                         setChewTimestamp(current, pEntity.level().getGameTime());
@@ -96,9 +98,9 @@ public abstract class ACExItemEntityMixin extends Entity {
         Level level = this.level();
         ItemStack item = this.getItem();
 
-        if (AlexsCavesExemplified.COMMON_CONFIG.PURPLE_LEATHERED_ENABLED.get() && item.getItem() instanceof DyeableLeatherItem dyeableLeatherItem && this.isInFluidType(ACFluidRegistry.PURPLE_SODA_FLUID_TYPE.get())) {
-            if (!dyeableLeatherItem.hasCustomColor(item)){
-                dyeableLeatherItem.setColor(item, 0Xb839e6);
+        if (AlexsCavesExemplified.COMMON_CONFIG.PURPLE_LEATHERED_ENABLED.get() && item.is(ItemTags.DYEABLE) && this.isInFluidType(ACFluidRegistry.PURPLE_SODA_FLUID_TYPE.get())) {
+            if (!item.has(DataComponents.DYED_COLOR)){
+                item.set(DataComponents.DYED_COLOR, new DyedItemColor(0XB839E6, true));
                 ACExUtils.awardAdvancement(this.getOwner(), "purple_coloring", "colored");
             }
         }
@@ -134,7 +136,7 @@ public abstract class ACExItemEntityMixin extends Entity {
                     explosion.explode();
                     explosion.finalizeExplosion(true);
 
-                    ACAdvancementTriggerRegistry.FROSTMINT_EXPLOSION.triggerForEntity(this.getOwner());
+                    ACAdvancementTriggerRegistry.FROSTMINT_EXPLOSION.get().triggerForEntity(this.getOwner());
 
                     item.shrink(1);
                 }
@@ -147,7 +149,7 @@ public abstract class ACExItemEntityMixin extends Entity {
             if (stack.getItem() instanceof SackOfSatingItem){
                 for (ItemEntity itemEntity : this.level().getEntitiesOfClass(ItemEntity.class, this.getBoundingBox().inflate(1))) {
                     ItemStack nearItemStack = itemEntity.getItem();
-                    if (!nearItemStack.isEmpty() && nearItemStack.isEdible() && getOwner() instanceof Player player) {
+                    if (!nearItemStack.isEmpty() && getOwner() instanceof Player player && nearItemStack.getFoodProperties(player) != null) {
 
                         if(nearItemStack.is(ACTagRegistry.EXPLODES_SACK_OF_SATING)){
                             setExploding(stack, true);
@@ -157,7 +159,7 @@ public abstract class ACExItemEntityMixin extends Entity {
 
                         FoodProperties foodProperties = nearItemStack.getFoodProperties(player);
                         if(foodProperties != null && !nearItemStack.is(ACTagRegistry.RESTRICTED_FROM_SACK_OF_SATING)){
-                            foodAmount = foodProperties.getNutrition() * nearItemStack.getCount();
+                            foodAmount = foodProperties.nutrition() * nearItemStack.getCount();
                         } else foodAmount = 0;
                         setHunger(stack, getHunger(stack) + foodAmount);
                         ACExUtils.awardAdvancement(player,"dropped_consumption","consumed");

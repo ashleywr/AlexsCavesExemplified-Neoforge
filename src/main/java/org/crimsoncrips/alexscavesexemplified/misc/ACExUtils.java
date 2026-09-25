@@ -5,10 +5,12 @@ import com.github.alexmodguy.alexscaves.server.item.ACItemRegistry;
 import com.github.alexmodguy.alexscaves.server.potion.ACEffectRegistry;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -21,13 +23,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fml.ModList;
+import net.neoforged.fml.ModList;
 import org.crimsoncrips.alexscavesexemplified.AlexsCavesExemplified;
 import org.crimsoncrips.alexscavesexemplified.compat.CreateCompat;
 import org.joml.AxisAngle4f;
@@ -39,6 +42,10 @@ import static com.github.alexmodguy.alexscaves.server.entity.util.MagnetUtil.get
 import static com.github.alexmodguy.alexscaves.server.entity.util.MagnetUtil.setEntityMagneticDelta;
 
 public class ACExUtils {
+    public static int getEnchantmentLevel(ItemStack stack, LivingEntity entity, ResourceKey<Enchantment> enchantment) {
+        return stack.getEnchantmentLevel(entity.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(enchantment));
+    }
+
     public static void dropMagneticItem(Player player, ItemStack item){
         ItemEntity itementity = new ItemEntity(player.level(), player.getX(), player.getEyeY(), player.getZ(), item);
         itementity.setPickUpDelay(60);
@@ -81,7 +88,7 @@ public class ACExUtils {
 
     public static void awardAdvancement(Entity entity, String advancementName, String criteria){
         if(entity instanceof ServerPlayer serverPlayer){
-            Advancement advancement = serverPlayer.serverLevel().getServer().getAdvancements().getAdvancement(new ResourceLocation(AlexsCavesExemplified.MODID, advancementName));
+            AdvancementHolder advancement = serverPlayer.serverLevel().getServer().getAdvancements().get(ResourceLocation.fromNamespaceAndPath(AlexsCavesExemplified.MODID, advancementName));
             if (advancement != null) {
                 serverPlayer.getAdvancements().award(advancement, criteria);
             }
@@ -91,7 +98,7 @@ public class ACExUtils {
     public static void awardOutsideAdvancement(Entity entity, String advancementName, String criteria,String modId){
         if(entity instanceof ServerPlayer serverPlayer){
             System.out.println(modId);
-            Advancement advancement = serverPlayer.serverLevel().getServer().getAdvancements().getAdvancement(new ResourceLocation(modId, advancementName));
+            AdvancementHolder advancement = serverPlayer.serverLevel().getServer().getAdvancements().get(ResourceLocation.fromNamespaceAndPath(modId, advancementName));
             if (advancement != null) {
                 serverPlayer.getAdvancements().award(advancement, criteria);
             }
@@ -124,7 +131,8 @@ public class ACExUtils {
         if (!entity.level().isClientSide){
             for (int i = 0; i <= loop; i++) {
                 LootParams ctx = new LootParams.Builder((ServerLevel) entity.level()).withParameter(LootContextParams.THIS_ENTITY, entity).create(LootContextParamSets.EMPTY);
-                ObjectArrayList<ItemStack> rewards = entity.level().getServer().getLootData().getLootTable(location).getRandomItems(ctx);
+                ObjectArrayList<ItemStack> rewards = entity.level().getServer().reloadableRegistries().getLootTable(
+                        net.minecraft.resources.ResourceKey.create(Registries.LOOT_TABLE, location)).getRandomItems(ctx);
                 if (!rewards.isEmpty()) {
                     rewards.forEach(stack -> BehaviorUtils.throwItem(entity, rewards.get(0), owner.position().add(0.0D, 1.0D, 0.0D)));
                 }
@@ -151,7 +159,7 @@ public class ACExUtils {
 
     public static void irradiationWash(LivingEntity entity,int amount){
         if (AlexsCavesExemplified.COMMON_CONFIG.IRRADIATION_WASHOFF_ENABLED.get()){
-            MobEffectInstance irradiated = entity.getEffect(ACEffectRegistry.IRRADIATED.get());
+            MobEffectInstance irradiated = entity.getEffect(ACEffectRegistry.IRRADIATED);
             if (irradiated != null) {
                 entity.removeEffect(irradiated.getEffect());
                 if (irradiated.getDuration() > amount) {
