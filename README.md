@@ -1,6 +1,6 @@
 # Alex's Caves Exemplified — NeoForge 1.21.1
 
-This branch ports Alex's Caves Exemplified to Minecraft 1.21.1 / NeoForge and targets Ashley's Alex's Caves fork. That fork includes Alex's Caves Tweak (TACT), and the addon has been tested with both mods active.
+This branch ports Alex's Caves Exemplified to Minecraft 1.21.1 / NeoForge and targets my Alex's Caves fork. That fork includes Alex's Caves Tweak (TACT), and the addon has been tested with both mods active.
 
 The addon expands every Alex's Caves biome with new creature behavior, item and block interactions, progression, effects, advancements, and several deliberately chaotic optional features. See [FEATURES.md](FEATURES.md) for the complete feature and setting inventory.
 
@@ -9,7 +9,7 @@ The addon expands every Alex's Caves biome with new creature behavior, item and 
 - Minecraft 1.21.1
 - NeoForge 21.1.219 or newer 21.1.x
 - Java 21
-- Ashley's Alex's Caves fork 2.0.10.1 or newer
+- my Alex's Caves fork 2.0.10.1 or newer
 - Citadel 2.7.1 or newer
 
 TACT 1.5.3 is embedded in the targeted Alex's Caves fork. It is declared as an optional companion so the addon remains usable if that packaging changes.
@@ -61,7 +61,7 @@ Please report addon-specific issues to the [Alex's Caves Exemplified issue track
 
 <!-- ashley-release-information -->
 
-## Ashley's builds
+## My builds
 
 This is an unofficial maintenance fork. Original authors retain ownership and credit. See the [upstream project](https://github.com/CrimsonCrips/AlexsCavesExemplified) for the original mod. Local changes do not imply upstream endorsement.
 

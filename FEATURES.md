@@ -142,7 +142,7 @@ These switches live in `alexscavesexemplified-targets.toml` so pack makers can i
 
 ## Compatibility status
 
-- Ashley's Alex's Caves fork 2.0.10.1 and its embedded TACT module: server world creation and client startup tested.
+- my Alex's Caves fork 2.0.10.1 and its embedded TACT module: server world creation and client startup tested.
 - Alex's Mobs and Create: optional mixins are applied only when their target classes exist.
 - Curios/Curious Lanterns, Farmer's Delight, Biomes O' Plenty, Patchouli, and Supplementaries: optional runtime integrations retained.
 - Alex's Caves Enriched: its old integration is omitted because there is no compatible 1.21.1 build to compile or test against.
