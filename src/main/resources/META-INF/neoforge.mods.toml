@@ -7,6 +7,7 @@ issueTrackerURL="https://github.com/CrimsonCrips/AlexsCavesExemplified/issues"
 config="alexscavesexemplified.mixins.json"
 
 [[mods]]
+enumExtensions="META-INF/enumextensions.json"
 modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"

@@ -1,5 +1,6 @@
 package org.crimsoncrips.alexscavesexemplified.mixins.external_mobs;
 
+import org.crimsoncrips.alexscavesexemplified.server.ACExAttachments;
 import com.github.alexmodguy.alexscaves.server.block.ACBlockRegistry;
 import com.github.alexmodguy.alexscaves.server.block.fluid.ACFluidRegistry;
 import com.github.alexmodguy.alexscaves.server.entity.util.FrostmintExplosion;
@@ -7,22 +8,24 @@ import com.github.alexmodguy.alexscaves.server.item.ACItemRegistry;
 import com.github.alexmodguy.alexscaves.server.item.SackOfSatingItem;
 import com.github.alexmodguy.alexscaves.server.misc.ACAdvancementTriggerRegistry;
 import com.github.alexmodguy.alexscaves.server.misc.ACTagRegistry;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.util.TriState;
+import net.neoforged.neoforge.event.EventHooks;
 import org.crimsoncrips.alexscavesexemplified.AlexsCavesExemplified;
 import org.crimsoncrips.alexscavesexemplified.datagen.tags.ACExBlockTagGenerator;
 import org.crimsoncrips.alexscavesexemplified.datagen.tags.ACExItemTagGenerator;
@@ -59,11 +62,12 @@ public abstract class ACExItemEntityMixin extends Entity {
     int timeToCook = 0;
 
     @Inject(method = "playerTouch", at = @At("HEAD"))
-    private void playerTouch(Player pEntity, CallbackInfo ci){
+    private void alexsCavesExemplified$playerTouch(Player pEntity, CallbackInfo ci){
         ItemEntity itemEntity = (ItemEntity)(Object)this;
         if (!this.level().isClientSide && AlexsCavesExemplified.COMMON_CONFIG.TUNED_SATING_ENABLED.get()) {
             ItemStack itemstack = itemEntity.getItem();
-            if (this.pickupDelay <= 0 && itemstack.getFoodProperties(pEntity) != null && !pEntity.getInventory().add(itemstack)) {
+            TriState hook = EventHooks.fireItemPickupPre(itemEntity, pEntity).canPickup();
+            if (this.pickupDelay <= 0 && (hook.isDefault() || itemstack.getCount() <= 0) && itemstack.has(DataComponents.FOOD) && !pEntity.getInventory().add(itemstack)) {
                 Inventory inv = pEntity.getInventory();
                 for (int i = 0; i < inv.getContainerSize(); i++) {
                     ItemStack current = inv.getItem(i);
@@ -93,14 +97,14 @@ public abstract class ACExItemEntityMixin extends Entity {
     }
 
     @Inject(method = "tick", at = @At("TAIL"))
-    private void tick(CallbackInfo ci) {
+    private void alexsCavesExemplified$tick(CallbackInfo ci) {
         BlockState blockState = this.getBlockStateOn();
         Level level = this.level();
         ItemStack item = this.getItem();
 
         if (AlexsCavesExemplified.COMMON_CONFIG.PURPLE_LEATHERED_ENABLED.get() && item.is(ItemTags.DYEABLE) && this.isInFluidType(ACFluidRegistry.PURPLE_SODA_FLUID_TYPE.get())) {
             if (!item.has(DataComponents.DYED_COLOR)){
-                item.set(DataComponents.DYED_COLOR, new DyedItemColor(0XB839E6, true));
+                item.set(DataComponents.DYED_COLOR, new DyedItemColor(0Xb839e6, true));
                 ACExUtils.awardAdvancement(this.getOwner(), "purple_coloring", "colored");
             }
         }
@@ -109,7 +113,7 @@ public abstract class ACExItemEntityMixin extends Entity {
             if (level.getBlockState(this.blockPosition()).is(Blocks.WATER_CAULDRON) && item.is(ACExItemTagGenerator.GELATINABLE) && level.getBlockState(this.blockPosition().below()).is(ACExBlockTagGenerator.GELATIN_FIRE)) {
                 for (ItemEntity itemEntity : this.level().getEntitiesOfClass(ItemEntity.class, this.getBoundingBox().inflate(0.2))) {
                     ItemStack nearBone = itemEntity.getItem();
-                    if (nearBone.getItem() instanceof DyeItem && timeToCook >= 50) {
+                    if (nearBone.getItem() instanceof DyeItem && timeToCook >= ACExUtils.seconds(2.5F)) {
                         ItemStack gelatinColor = switch (checkDye(nearBone)) {
                             case 2 -> ACItemRegistry.GELATIN_PINK.get().asItem().getDefaultInstance();
                             case 3 -> ACItemRegistry.GELATIN_GREEN.get().asItem().getDefaultInstance();
@@ -149,7 +153,7 @@ public abstract class ACExItemEntityMixin extends Entity {
             if (stack.getItem() instanceof SackOfSatingItem){
                 for (ItemEntity itemEntity : this.level().getEntitiesOfClass(ItemEntity.class, this.getBoundingBox().inflate(1))) {
                     ItemStack nearItemStack = itemEntity.getItem();
-                    if (!nearItemStack.isEmpty() && getOwner() instanceof Player player && nearItemStack.getFoodProperties(player) != null) {
+                    if (!nearItemStack.isEmpty() && nearItemStack.has(DataComponents.FOOD) && getOwner() instanceof Player player) {
 
                         if(nearItemStack.is(ACTagRegistry.EXPLODES_SACK_OF_SATING)){
                             setExploding(stack, true);
@@ -172,7 +176,7 @@ public abstract class ACExItemEntityMixin extends Entity {
     }
 
     public boolean fireImmune() {
-        return super.fireImmune() || this.getPersistentData().getBoolean("DraggedProtection");
+        return super.fireImmune() || this.getData(ACExAttachments.DRAGGED_PROTECTION);
     }
 
     public int checkDye(ItemStack possibleDye){

@@ -22,7 +22,7 @@ public abstract class ACExMobMixin extends LivingEntity {
     }
 
     @WrapOperation(method = "setTarget", at = @At(value = "INVOKE", target = "Lnet/neoforged/neoforge/event/entity/living/LivingChangeTargetEvent;getNewAboutToBeSetTarget()Lnet/minecraft/world/entity/LivingEntity;"))
-    private LivingEntity bypassExpensiveCalculationIfNecessary(LivingChangeTargetEvent instance, Operation<LivingEntity> original) {
+    private LivingEntity alexsCavesExemplified$setTarget(LivingChangeTargetEvent instance, Operation<LivingEntity> original) {
         if (this.hasEffect(ACExEffects.SERENED) && this.getLastHurtByMob() != instance.getNewAboutToBeSetTarget() && AlexsCavesExemplified.COMMON_CONFIG.SERENED_ENABLED.get()) {
             return null;
         } else {

@@ -12,12 +12,10 @@ import com.github.alexmodguy.alexscaves.server.misc.ACDamageTypes;
 import com.github.alexmodguy.alexscaves.server.misc.ACSoundRegistry;
 import com.github.alexmodguy.alexscaves.server.misc.ACTagRegistry;
 import com.google.common.collect.Maps;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -37,13 +35,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class AcidCauldronBlock extends ACExCauldron {
-
-    public static final MapCodec<AcidCauldronBlock> CODEC = simpleCodec(AcidCauldronBlock::new);
-
-    @Override
-    protected MapCodec<? extends AcidCauldronBlock> codec() {
-        return CODEC;
-    }
 
 
     public AcidCauldronBlock(BlockBehaviour.Properties p_153498_) {

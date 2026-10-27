@@ -3,8 +3,8 @@ package org.crimsoncrips.alexscavesexemplified.mixins.misc;
 import com.github.alexmodguy.alexscaves.server.entity.item.SugarStaffHexEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import org.crimsoncrips.alexscavesexemplified.AlexsCavesExemplified;
 import org.spongepowered.asm.mixin.Mixin;
 
@@ -19,7 +19,7 @@ public abstract class ACExSugarStaffHexMixin extends Entity {
 
     @Override
     public boolean ignoreExplosion(Explosion explosion) {
-        return AlexsCavesExemplified.COMMON_CONFIG.RADIANT_WRATH_ENABLED.get() || super.ignoreExplosion(explosion);
+        return AlexsCavesExemplified.COMMON_CONFIG.RADIANT_WRATH_ENABLED.get();
     }
 
 }

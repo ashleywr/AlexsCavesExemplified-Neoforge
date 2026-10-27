@@ -88,6 +88,7 @@ dependencies {
 
     // Optional integrations are compile-only. The local pack supplies these exact
     // 1.21.1 NeoForge ports when present, without making the addon require them.
+    compileOnly files(new File(packModsDir, 'Jade-1.21.1-NeoForge-15.10.6.jar'))
     compileOnly files(new File(packModsDir, 'alexsmobs-2.2.2-neoforge+1.21.1.jar'))
     compileOnly files(new File(packModsDir, 'curios-neoforge-9.5.1+1.21.1.jar'))
     compileOnly files(new File(packModsDir, 'create-1.21.1-6.0.10.jar'))

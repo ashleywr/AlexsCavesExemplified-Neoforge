@@ -1,49 +1,57 @@
 package org.crimsoncrips.alexscavesexemplified;
 
 
+import org.crimsoncrips.alexscavesexemplified.server.item.ACExDataComponents;
 import com.github.alexmodguy.alexscaves.server.block.ACBlockRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FireBlock;
-import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.NeoForge;
 import org.apache.commons.lang3.tuple.Pair;
 import org.crimsoncrips.alexscavesexemplified.client.ACExClientConfig;
 import org.crimsoncrips.alexscavesexemplified.client.ACExClientProxy;
+import org.crimsoncrips.alexscavesexemplified.client.ACExSoundRegistry;
 import org.crimsoncrips.alexscavesexemplified.client.particle.ACExParticleRegistry;
+import org.crimsoncrips.alexscavesexemplified.loot.ACExLootModifiers;
+import org.crimsoncrips.alexscavesexemplified.misc.ACExScheduler;
+import org.crimsoncrips.alexscavesexemplified.networking.ACExPacketRegistration;
 import org.crimsoncrips.alexscavesexemplified.server.ACExAddTargetsConfig;
+import org.crimsoncrips.alexscavesexemplified.server.ACExAttachments;
+import org.crimsoncrips.alexscavesexemplified.server.ACExCommands;
 import org.crimsoncrips.alexscavesexemplified.server.ACExServerConfig;
 import org.crimsoncrips.alexscavesexemplified.server.blocks.ACExBlockRegistry;
-import org.crimsoncrips.alexscavesexemplified.client.ACExSoundRegistry;
 import org.crimsoncrips.alexscavesexemplified.server.blocks.cauldron.ACExCauldronInteraction;
 import org.crimsoncrips.alexscavesexemplified.server.effect.ACExEffects;
 import org.crimsoncrips.alexscavesexemplified.server.entity.ACExEntityRegistry;
+import org.crimsoncrips.alexscavesexemplified.server.events.ACEAddGoals;
+import org.crimsoncrips.alexscavesexemplified.server.events.ACEAddTargets;
 import org.crimsoncrips.alexscavesexemplified.server.events.ACExModEvents;
 import org.crimsoncrips.alexscavesexemplified.server.events.ACExemplifiedEvents;
-import org.crimsoncrips.alexscavesexemplified.loot.ACExLootModifiers;
 import org.crimsoncrips.alexscavesexemplified.server.item.ACExItemRegistry;
+import org.crimsoncrips.alexscavesexemplified.server.item.ACExSugarStaffAbilities;
 
 import java.util.Locale;
+import java.util.function.Supplier;
 
-@SuppressWarnings("deprecated")
 @Mod(AlexsCavesExemplified.MODID)
 public class AlexsCavesExemplified {
 
     public static final String MODID = "alexscavesexemplified";
-    public static final ACExCommonProxy PROXY = FMLEnvironment.dist.isClient() ? new ACExClientProxy() : new ACExCommonProxy();
+    public static final ACExCommonProxy PROXY = FMLEnvironment.dist.isClient() ? ((Supplier<ACExCommonProxy>) ACExClientProxy::new).get() : new ACExCommonProxy();
 
     public static final ACExServerConfig COMMON_CONFIG;
-    private static final ModConfigSpec COMMON_CONFIG_SPEC;
+    public static final ModConfigSpec COMMON_CONFIG_SPEC;
     public static final ACExClientConfig CLIENT_CONFIG;
-    private static final ModConfigSpec CLIENT_CONFIG_SPEC;
+    public static final ModConfigSpec CLIENT_CONFIG_SPEC;
     public static final ACExAddTargetsConfig TARGETS_CONFIG;
-    private static final ModConfigSpec TARGETS_CONFIG_SPEC;
+    public static final ModConfigSpec TARGETS_CONFIG_SPEC;
 
     static {
         final Pair<ACExServerConfig, ModConfigSpec> serverPair = new ModConfigSpec.Builder().configure(ACExServerConfig::new);
@@ -60,30 +68,35 @@ public class AlexsCavesExemplified {
     public AlexsCavesExemplified(IEventBus modEventBus, ModContainer modContainer) {
         modContainer.registerConfig(ModConfig.Type.COMMON, COMMON_CONFIG_SPEC, "alexscavesexemplified-general.toml");
         modContainer.registerConfig(ModConfig.Type.CLIENT, CLIENT_CONFIG_SPEC, "alexscavesexemplified-client.toml");
-        modContainer.registerConfig(ModConfig.Type.COMMON, TARGETS_CONFIG_SPEC, "alexscavesexemplified-targets.toml");
+        modContainer.registerConfig(ModConfig.Type.COMMON, TARGETS_CONFIG_SPEC, "alexscavesexemplified-target.toml");
+
         ACExEntityRegistry.DEF_REG.register(modEventBus);
         ACExLootModifiers.register(modEventBus);
         modEventBus.register(new ACExModEvents());
+        modEventBus.register(new ACExPacketRegistration());
         NeoForge.EVENT_BUS.register(new ACExemplifiedEvents());
+        NeoForge.EVENT_BUS.register(new ACEAddTargets());
+        NeoForge.EVENT_BUS.register(new ACEAddGoals());
+        NeoForge.EVENT_BUS.addListener(ACExSugarStaffAbilities::tickSweetRelease);
+        NeoForge.EVENT_BUS.addListener(ACExSugarStaffAbilities::removeStaleScripted);
+        NeoForge.EVENT_BUS.addListener(ACExSugarStaffAbilities::anchorHex);
+        NeoForge.EVENT_BUS.addListener(ACExSugarStaffAbilities::cancelSpearKnockback);
+        NeoForge.EVENT_BUS.addListener(ACExCommands::register);
+        NeoForge.EVENT_BUS.addListener(ACExScheduler::tick);
+        NeoForge.EVENT_BUS.addListener(ACExScheduler::clear);
+        ACExAttachments.DEF_REG.register(modEventBus);
         ACExParticleRegistry.DEF_REG.register(modEventBus);
         ACExBlockRegistry.DEF_REG.register(modEventBus);
         ACExItemRegistry.DEF_REG.register(modEventBus);
-        PROXY.init(modEventBus);
+        ACExDataComponents.DEF_REG.register(modEventBus);
+        PROXY.init(modEventBus, modContainer);
         ACExEffects.EFFECT_REGISTER.register(modEventBus);
         ACExSoundRegistry.DEF_REG.register(modEventBus);
         ACExEffects.POTION_REGISTER.register(modEventBus);
         modEventBus.addListener(this::setup);
-
-
-
     }
 
-
-
-
-
     private void setup(final FMLCommonSetupEvent event) {
-        ACExEffects.init();
         ACExItemRegistry.setup();
 
         event.enqueueWork(() -> PROXY.clientInit());

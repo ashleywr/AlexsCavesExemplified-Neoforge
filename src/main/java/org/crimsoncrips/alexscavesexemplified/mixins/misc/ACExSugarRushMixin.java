@@ -32,7 +32,7 @@ public class ACExSugarRushMixin extends MobEffect {
     private void alexsCavesExemplified$applyEffectTick(LivingEntity entity, int amplifier, CallbackInfoReturnable<Boolean> cir) {
         if (lastDuration <= 2 && AlexsCavesExemplified.COMMON_CONFIG.SUGAR_CRASH_ENABLED.get() && (entity.getRandom().nextDouble() < 0.3 || amplifier >= 2)) {
             int sugarcrashLevel = amplifier + 1;
-            entity.addEffect(new MobEffectInstance(ACExEffects.SUGAR_CRASH, 400, amplifier));
+            entity.addEffect(new MobEffectInstance(ACExEffects.SUGAR_CRASH, ACExUtils.seconds(20.0F), amplifier));
             entity.hurt(ACExDamageTypes.getDamageSource(entity.level(), ACExDamageTypes.SUGAR_CRASH), sugarcrashLevel * 2);
 
             if (sugarcrashLevel > 3){
@@ -42,10 +42,9 @@ public class ACExSugarRushMixin extends MobEffect {
         }
     }
 
-    @Override
-    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
+    @Inject(method = "shouldApplyEffectTickThisTick", at = @At("HEAD"))
+    private void alexsCavesExemplified$shouldApplyEffectTickThisTick(int duration, int amplifier, CallbackInfoReturnable<Boolean> cir) {
         lastDuration = duration;
-        return duration > 0;
     }
 
 

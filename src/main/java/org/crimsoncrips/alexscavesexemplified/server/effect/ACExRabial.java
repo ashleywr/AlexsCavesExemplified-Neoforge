@@ -1,7 +1,6 @@
 package org.crimsoncrips.alexscavesexemplified.server.effect;
 
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,8 +15,8 @@ public class ACExRabial extends MobEffect {
     public ACExRabial() {
         super(MobEffectCategory.HARMFUL, 0Xe6b0ac);
         
-        this.addAttributeModifier(Attributes.ATTACK_DAMAGE, ResourceLocation.fromNamespaceAndPath(AlexsCavesExemplified.MODID, "rabial_attack"), 0.1000000596046448, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-        this.addAttributeModifier(Attributes.ARMOR, ResourceLocation.fromNamespaceAndPath(AlexsCavesExemplified.MODID, "rabial_armor"), -2, AttributeModifier.Operation.ADD_VALUE);
+        this.addAttributeModifier(Attributes.ATTACK_DAMAGE, AlexsCavesExemplified.prefix("effect.rabial.attack_damage"), 0.1000000596046448, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        this.addAttributeModifier(Attributes.ARMOR, AlexsCavesExemplified.prefix("effect.rabial.armor"), -2, AttributeModifier.Operation.ADD_VALUE);
 
 
     }

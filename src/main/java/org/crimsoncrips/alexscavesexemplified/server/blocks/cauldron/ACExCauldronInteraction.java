@@ -3,7 +3,6 @@ package org.crimsoncrips.alexscavesexemplified.server.blocks.cauldron;
 import com.github.alexmodguy.alexscaves.server.item.ACItemRegistry;
 import com.github.alexmodguy.alexscaves.server.misc.ACSoundRegistry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.Map;
 import java.util.function.Predicate;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -13,7 +12,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -21,6 +19,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
@@ -38,7 +37,7 @@ public interface ACExCauldronInteraction extends CauldronInteraction {
     CauldronInteraction FILL_SODA = (p_175676_, p_175677_, p_175678_, p_175679_, p_175680_, p_175681_) -> CauldronInteraction.emptyBucket(p_175677_, p_175678_, p_175679_, p_175680_, p_175681_, ACExBlockRegistry.PURPLE_SODA_CAULDRON.get().defaultBlockState(), ACSoundRegistry.PURPLE_SODA_SWIM.get());
 
     static void bootStrap() {
-        addDefaultInteractions(EMPTY.map());
+        addDefaultInteractions(EMPTY);
         if (AlexsCavesExemplified.COMMON_CONFIG.LIQUID_REPLICATION_ENABLED.get()) {
             EMPTY.map().put(ACItemRegistry.PURPLE_SODA_BOTTLE.get(), (p_175732_, p_175733_, p_175734_, p_175735_, p_175736_, p_175737_) -> {
                 if (!p_175733_.isClientSide) {
@@ -58,7 +57,7 @@ public interface ACExCauldronInteraction extends CauldronInteraction {
                 return true;
             }, ACSoundRegistry.ACID_SUBMERGE.get());
         });
-        addDefaultInteractions(ACID.map());
+        addDefaultInteractions(ACID);
 
         PURPLE_SODA.map().put(Items.BUCKET, (p_175697_, p_175698_, p_175699_, p_175700_, p_175701_, p_175702_) -> {
             return fillBucket(p_175697_, p_175698_, p_175699_, p_175700_, p_175701_, p_175702_, new ItemStack(ACItemRegistry.PURPLE_SODA_BUCKET.get()), (p_175651_) -> {
@@ -70,12 +69,12 @@ public interface ACExCauldronInteraction extends CauldronInteraction {
                 return true;
             }, ACSoundRegistry.PURPLE_SODA_SUBMERGE.get());
         });
-        addDefaultInteractions(PURPLE_SODA.map());
+        addDefaultInteractions(PURPLE_SODA);
     }
 
-    static void addDefaultInteractions(Map<Item, CauldronInteraction> pInteractionsMap) {
-        pInteractionsMap.put(ACItemRegistry.ACID_BUCKET.get(), FILL_ACID);
-        pInteractionsMap.put(ACItemRegistry.PURPLE_SODA_BUCKET.get(), FILL_SODA);
+    static void addDefaultInteractions(CauldronInteraction.InteractionMap pInteractionsMap) {
+        pInteractionsMap.map().put(ACItemRegistry.ACID_BUCKET.get(), FILL_ACID);
+        pInteractionsMap.map().put(ACItemRegistry.PURPLE_SODA_BUCKET.get(), FILL_SODA);
     }
 
     static ItemInteractionResult fillBucket(BlockState pBlockState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, ItemStack pEmptyStack, ItemStack pFilledStack, Predicate<BlockState> pStatePredicate, SoundEvent pFillSound) {

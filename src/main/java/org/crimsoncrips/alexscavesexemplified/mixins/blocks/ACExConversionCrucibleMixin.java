@@ -8,17 +8,14 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import org.crimsoncrips.alexscavesexemplified.misc.ACExUtils;
-import org.crimsoncrips.alexscavesexemplified.misc.interfaces.ConversionAmplified;
+import org.crimsoncrips.alexscavesexemplified.mixins.misc.ACExConversionCrucibleAccessor;
+import org.crimsoncrips.alexscavesexemplified.server.ACExAttachments;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 
@@ -32,17 +29,16 @@ public abstract class ACExConversionCrucibleMixin extends BaseEntityBlock {
     }
 
     @ModifyReturnValue(method = "useItemOn", at = @At("RETURN"))
-    private ItemInteractionResult alexsMobsInteraction$use(ItemInteractionResult original, ItemStack playerItem, BlockState state,
-                                                           Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+    private ItemInteractionResult alexsCavesExemplified$useItemOn(ItemInteractionResult original, @Local(argsOnly = true) ItemStack playerItem, @Local(argsOnly = true) Level worldIn, @Local(argsOnly = true) BlockPos pos, @Local(argsOnly = true) Player player) {
         if (worldIn.getBlockEntity(pos) instanceof ConversionCrucibleBlockEntity crucible && !player.isShiftKeyDown() && !crucible.isWitchMode()) {
-            if(playerItem.is(ACItemRegistry.RADIANT_ESSENCE.get()) && crucible.getConvertingToBiome() == null && !((ConversionAmplified)crucible).isOverdrived()){
+            if(playerItem.is(ACItemRegistry.RADIANT_ESSENCE.get()) && crucible.getConvertingToBiome() == null && !crucible.getData(ACExAttachments.OVERDRIVED)){
                 crucible.setFilledLevel(1);
                 ACExUtils.awardAdvancement(player,"overdrived_conversion","overdrived");
-                ((ConversionAmplified) crucible).setStack(ACItemRegistry.BIOME_TREAT.get().getDefaultInstance());
+                ((ACExConversionCrucibleAccessor) crucible).setWantStack(ACItemRegistry.BIOME_TREAT.get().getDefaultInstance());
                 playerItem.shrink(1);
                 worldIn.playSound(null, pos, ACSoundRegistry.CONVERSION_CRUCIBLE_ACTIVATE.get(), SoundSource.BLOCKS);
                 crucible.markUpdated();
-                ((ConversionAmplified) crucible).setOverdrived(true);
+                crucible.setData(ACExAttachments.OVERDRIVED, true);
                 return ItemInteractionResult.SUCCESS;
             }
         }

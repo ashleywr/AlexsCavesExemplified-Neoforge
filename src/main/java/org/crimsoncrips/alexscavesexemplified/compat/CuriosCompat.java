@@ -13,7 +13,7 @@ public class CuriosCompat {
     }
 
     private static boolean curiosLight(LivingEntity target){
-        if (ModList.get().isLoaded("curiouslanterns")) {
+        if (ModList.get().isLoaded("curios")) {
             try{
                 ICuriosItemHandler handler = CuriosApi.getCuriosInventory(target).orElseThrow(() -> new IllegalStateException("Target " + target.getName() + " has no curios inventory!"));
                 return handler.getStacksHandler("belt").orElseThrow().getStacks().getStackInSlot(0).is(ACExItemTagGenerator.LIGHT);

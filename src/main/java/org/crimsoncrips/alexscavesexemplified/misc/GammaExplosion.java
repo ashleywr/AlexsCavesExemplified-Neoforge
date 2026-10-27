@@ -27,6 +27,7 @@ import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.EntityBasedExplosionDamageCalculator;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.ExplosionDamageCalculator;
@@ -71,8 +72,7 @@ public class GammaExplosion extends Explosion {
     }
 
     public GammaExplosion(Level pLevel, @Nullable Entity pSource, @Nullable DamageSource pDamageSource, @Nullable ExplosionDamageCalculator pDamageCalculator, double pToBlowX, double pToBlowY, double pToBlowZ, float pRadius, boolean pFire) {
-        super(pLevel,pSource,pDamageSource,pDamageCalculator,pToBlowX,pToBlowY,pToBlowZ,pRadius,pFire, Explosion.BlockInteraction.DESTROY,
-                ParticleTypes.EXPLOSION, ParticleTypes.EXPLOSION_EMITTER, SoundEvents.GENERIC_EXPLODE);
+        super(pLevel,pSource,pDamageSource,pDamageCalculator,pToBlowX,pToBlowY,pToBlowZ,pRadius,pFire, Explosion.BlockInteraction.DESTROY, ParticleTypes.EXPLOSION, ParticleTypes.EXPLOSION_EMITTER, SoundEvents.GENERIC_EXPLODE);
         this.level = pLevel;
         this.source = pSource;
         this.radius = pRadius;
@@ -81,8 +81,7 @@ public class GammaExplosion extends Explosion {
         this.z = pToBlowZ;
         this.fire = pFire;
         this.damageSource = pDamageSource == null ? pLevel.damageSources().explosion(this) : pDamageSource;
-        this.damageCalculator = pDamageCalculator == null ?
-                (pSource == null ? EXPLOSION_DAMAGE_CALCULATOR : new EntityBasedExplosionDamageCalculator(pSource)) : pDamageCalculator;
+        this.damageCalculator = pDamageCalculator == null ? this.makeDamageCalculator(pSource) : pDamageCalculator;
         this.position = new Vec3(this.x, this.y, this.z);
     }
 
@@ -168,7 +167,7 @@ public class GammaExplosion extends Explosion {
                         double d11;
                         if (entity instanceof LivingEntity) {
                             LivingEntity livingentity = (LivingEntity)entity;
-                            d11 = d10;
+                            d11 = d10 * (1.0D - livingentity.getAttributeValue(Attributes.EXPLOSION_KNOCKBACK_RESISTANCE));
                         } else {
                             d11 = d10;
                         }

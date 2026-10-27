@@ -1,5 +1,7 @@
 package org.crimsoncrips.alexscavesexemplified.mixins.mobs;
 
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.core.component.DataComponents;
 import com.github.alexmodguy.alexscaves.server.entity.ai.MobTargetItemGoal;
 import com.github.alexmodguy.alexscaves.server.entity.living.GammaroachEntity;
 import com.github.alexmodguy.alexscaves.server.entity.util.TargetsDroppedItems;
@@ -9,7 +11,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.level.Level;
 import org.crimsoncrips.alexscavesexemplified.AlexsCavesExemplified;
 import org.crimsoncrips.alexscavesexemplified.misc.ACExUtils;
@@ -33,28 +34,20 @@ public abstract class ACExGammaroachMixin extends PathfinderMob implements Targe
         super(pEntityType, pLevel);
     }
 
-    @Inject(method = "registerGoals", at = @At("TAIL"))
-    private void registerGoals(CallbackInfo ci) {
-        GammaroachEntity gammaroach = (GammaroachEntity)(Object)this;
-        if (AlexsCavesExemplified.COMMON_CONFIG.ROACH_FEEDING_ENABLED.get()) {
-            gammaroach.targetSelector.addGoal(1, new MobTargetItemGoal<>(this, false));
-        }
-    }
 
     @Override
     public boolean canTargetItem(ItemStack itemStack) {
-        return itemStack.getFoodProperties(this) != null;
+        return itemStack.has(DataComponents.FOOD);
     }
 
     public void onGetItem(ItemEntity itemEntity) {
         ACExUtils.awardAdvancement(itemEntity.getOwner(),"feed_roach","feedroach");
-        FoodProperties food = itemEntity.getItem().getFoodProperties(this);
-        if (food != null) {
+        if (itemEntity.getItem().has(DataComponents.FOOD)) {
             this.heal(5);
-            List<FoodProperties.PossibleEffect> test = food.effects();
+            List<FoodProperties.PossibleEffect> test = Objects.requireNonNull(itemEntity.getItem().getFoodProperties(this)).effects();
             if (!test.isEmpty()){
                 for (int i = 0; i < test.size(); i++){
-                    this.addEffect(test.get(i).effect());
+                    this.addEffect(new MobEffectInstance(test.get(i).effect()));
                 }
             }
         }

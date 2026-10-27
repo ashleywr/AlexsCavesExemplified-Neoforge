@@ -1,5 +1,6 @@
 package org.crimsoncrips.alexscavesexemplified.mixins.mobs.tremorzilla;
 
+import org.crimsoncrips.alexscavesexemplified.server.ACExAttachments;
 import com.github.alexmodguy.alexscaves.AlexsCaves;
 import com.github.alexmodguy.alexscaves.client.model.TremorzillaModel;
 import com.github.alexmodguy.alexscaves.client.render.entity.CustomBookEntityRenderer;
@@ -16,7 +17,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.crimsoncrips.alexscavesexemplified.AlexsCavesExemplified;
-import org.crimsoncrips.alexscavesexemplified.misc.interfaces.Gammafied;
+import org.crimsoncrips.alexscavesexemplified.server.entity.ACExGammaAttacks;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -64,19 +66,21 @@ public abstract class ACExTremorzillaRenderMixin extends MobRenderer<Tremorzilla
     private static final ResourceLocation TEXTURE_GAMMA_BEAM_END_1 = ResourceLocation.parse("alexscavesexemplified:textures/entity/tremorzilla/tremorzilla_gamma_beam_end_1.png");
     private static final ResourceLocation TEXTURE_GAMMA_BEAM_END_2 = ResourceLocation.parse("alexscavesexemplified:textures/entity/tremorzilla/tremorzilla_gamma_beam_end_2.png");
 
+    @Unique
+    private static final float BEAM_SPLAY = 2.0F;
+
     public ACExTremorzillaRenderMixin(EntityRendererProvider.Context pContext, TremorzillaModel pModel, float pShadowRadius) {
         super(pContext, pModel, pShadowRadius);
     }
 
     @Override
     public ResourceLocation getTextureLocation(TremorzillaEntity entity) {
-        Gammafied myAccessor = (Gammafied) entity;
-        return AlexsCavesExemplified.COMMON_CONFIG.GAMMA_TREMORZILLA_ENABLED.get() && myAccessor.isGamma() ? TEXTURE_GAMMA : entity.getAltSkin() == 2 ? TEXTURE_TECTONIC : (entity.getAltSkin() == 1 ? TEXTURE_RETRO : TEXTURE);
+        return AlexsCavesExemplified.COMMON_CONFIG.GAMMA_TREMORZILLA_ENABLED.get() && entity.getData(ACExAttachments.GAMMA) ? TEXTURE_GAMMA : entity.getAltSkin() == 2 ? TEXTURE_TECTONIC : (entity.getAltSkin() == 1 ? TEXTURE_RETRO : TEXTURE);
     }
 
     @Override
     protected void scale(TremorzillaEntity mob, PoseStack matrixStackIn, float partialTicks) {
-        float scale = ((Gammafied)mob).isGamma() ? 1.5F : 1F;
+        float scale = mob.getData(ACExAttachments.GAMMA) ? 1.5F : 1F;
         matrixStackIn.scale(scale,scale,scale);
     }
 
@@ -85,10 +89,12 @@ public abstract class ACExTremorzillaRenderMixin extends MobRenderer<Tremorzilla
     //Thank you Reimnop for the big dick tri-beam
     @Inject(method = "render(Lcom/github/alexmodguy/alexscaves/server/entity/living/TremorzillaEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "HEAD"),remap = false,cancellable = true)
     private void alexsCavesExempified$render(TremorzillaEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource source, int packedLight, CallbackInfo ci) {
-        if(((Gammafied) entity).isGamma()){
+        if(entity.getData(ACExAttachments.GAMMA)){
             ci.cancel();
 
-            Vec3 gammaMultiplier = new Vec3(1.5F,1.5F,1.5F);
+            float modelScale = 1.5F * entity.getScale();
+            float merge = ACExGammaAttacks.beamMerge(entity, partialTicks);
+            Vec3 gammaMultiplier = new Vec3(modelScale, modelScale, modelScale);
 
             this.model.straighten = sepia;
             this.shadowRadius = 4.0F * (float)entity.getScale();
@@ -118,7 +124,7 @@ public abstract class ACExTremorzillaRenderMixin extends MobRenderer<Tremorzilla
                     poseStack.pushPose();
 
                     poseStack.mulPose(Axis.ZP.rotationDegrees(angle + ageInTicks * 4F));
-                    poseStack.mulPose(Axis.YP.rotationDegrees(2));
+                    poseStack.mulPose(Axis.YP.rotationDegrees(BEAM_SPLAY * (1.0F - merge)));
 
                     renderBeam(entity, poseStack, source, partialTicks, width, length, true, false);
                     if(AlexsCaves.CLIENT_CONFIG.radiationGlowEffect.get()){
@@ -137,39 +143,33 @@ public abstract class ACExTremorzillaRenderMixin extends MobRenderer<Tremorzilla
 
     @ModifyVariable(method = "renderBeam", at = @At(value = "STORE"), ordinal = 0,remap = false)
     private ResourceLocation beam1(ResourceLocation value, @Local TremorzillaEntity tremorzilla) {
-        Gammafied myAccessor = (Gammafied) tremorzilla;
-        return AlexsCavesExemplified.COMMON_CONFIG.GAMMA_TREMORZILLA_ENABLED.get() && myAccessor.isGamma() ? TEXTURE_GAMMA_BEAM_INNER : tremorzilla.getAltSkin() == 2 ? TEXTURE_TECTONIC_BEAM_INNER : (tremorzilla.getAltSkin() == 1 ? TEXTURE_RETRO_BEAM_INNER : TEXTURE_BEAM_INNER);
+        return AlexsCavesExemplified.COMMON_CONFIG.GAMMA_TREMORZILLA_ENABLED.get() && tremorzilla.getData(ACExAttachments.GAMMA) ? TEXTURE_GAMMA_BEAM_INNER : tremorzilla.getAltSkin() == 2 ? TEXTURE_TECTONIC_BEAM_INNER : (tremorzilla.getAltSkin() == 1 ? TEXTURE_RETRO_BEAM_INNER : TEXTURE_BEAM_INNER);
     }
 
 
     @ModifyVariable(method = "renderBeam", at = @At(value = "STORE",ordinal = 1),remap = false)
     private ResourceLocation beam2(ResourceLocation original, @Local TremorzillaEntity tremorzilla) {
-        Gammafied myAccessor = (Gammafied) tremorzilla;
-        return AlexsCavesExemplified.COMMON_CONFIG.GAMMA_TREMORZILLA_ENABLED.get() && myAccessor.isGamma() ? TEXTURE_GAMMA_BEAM_OUTER : tremorzilla.getAltSkin() == 2 ? TEXTURE_TECTONIC_BEAM_OUTER : (tremorzilla.getAltSkin() == 1 ? TEXTURE_RETRO_BEAM_OUTER : TEXTURE_BEAM_OUTER);
+        return AlexsCavesExemplified.COMMON_CONFIG.GAMMA_TREMORZILLA_ENABLED.get() && tremorzilla.getData(ACExAttachments.GAMMA) ? TEXTURE_GAMMA_BEAM_OUTER : tremorzilla.getAltSkin() == 2 ? TEXTURE_TECTONIC_BEAM_OUTER : (tremorzilla.getAltSkin() == 1 ? TEXTURE_RETRO_BEAM_OUTER : TEXTURE_BEAM_OUTER);
     }
 
     @ModifyReturnValue(method = "getEndBeamTexture", at = @At("RETURN"),remap = false)
     private ResourceLocation beam3(ResourceLocation original, @Local TremorzillaEntity tremorzilla) {
-        Gammafied myAccessor = (Gammafied) tremorzilla;
-        return AlexsCavesExemplified.COMMON_CONFIG.GAMMA_TREMORZILLA_ENABLED.get() && myAccessor.isGamma() ? TEXTURE_GAMMA_BEAM_END_0 : tremorzilla.getAltSkin() == 2 ? TEXTURE_TECTONIC_BEAM_END_0 : (tremorzilla.getAltSkin() == 1 ? TEXTURE_RETRO_BEAM_END_0 : TEXTURE_BEAM_END_0);
+        return AlexsCavesExemplified.COMMON_CONFIG.GAMMA_TREMORZILLA_ENABLED.get() && tremorzilla.getData(ACExAttachments.GAMMA) ? TEXTURE_GAMMA_BEAM_END_0 : tremorzilla.getAltSkin() == 2 ? TEXTURE_TECTONIC_BEAM_END_0 : (tremorzilla.getAltSkin() == 1 ? TEXTURE_RETRO_BEAM_END_0 : TEXTURE_BEAM_END_0);
     }
 
     @ModifyReturnValue(method = "getEndBeamTexture", at = @At("RETURN"),remap = false)
     private ResourceLocation beam4(ResourceLocation original, @Local TremorzillaEntity tremorzilla) {
-        Gammafied myAccessor = (Gammafied) tremorzilla;
-        return AlexsCavesExemplified.COMMON_CONFIG.GAMMA_TREMORZILLA_ENABLED.get() && myAccessor.isGamma() ? TEXTURE_GAMMA_BEAM_END_1 : tremorzilla.getAltSkin() == 2 ? TEXTURE_TECTONIC_BEAM_END_1 : (tremorzilla.getAltSkin() == 1 ? TEXTURE_RETRO_BEAM_END_1 : TEXTURE_BEAM_END_1);
+        return AlexsCavesExemplified.COMMON_CONFIG.GAMMA_TREMORZILLA_ENABLED.get() && tremorzilla.getData(ACExAttachments.GAMMA) ? TEXTURE_GAMMA_BEAM_END_1 : tremorzilla.getAltSkin() == 2 ? TEXTURE_TECTONIC_BEAM_END_1 : (tremorzilla.getAltSkin() == 1 ? TEXTURE_RETRO_BEAM_END_1 : TEXTURE_BEAM_END_1);
     }
 
     @ModifyReturnValue(method = "getEndBeamTexture", at = @At("RETURN"),remap = false)
     private ResourceLocation beam5(ResourceLocation original, @Local TremorzillaEntity tremorzilla) {
-        Gammafied myAccessor = (Gammafied) tremorzilla;
-        return AlexsCavesExemplified.COMMON_CONFIG.GAMMA_TREMORZILLA_ENABLED.get() && myAccessor.isGamma() ? TEXTURE_GAMMA_BEAM_END_2 : tremorzilla.getAltSkin() == 2 ? TEXTURE_TECTONIC_BEAM_END_2 : (tremorzilla.getAltSkin() == 1 ? TEXTURE_RETRO_BEAM_END_2 : TEXTURE_BEAM_END_2);
+        return AlexsCavesExemplified.COMMON_CONFIG.GAMMA_TREMORZILLA_ENABLED.get() && tremorzilla.getData(ACExAttachments.GAMMA) ? TEXTURE_GAMMA_BEAM_END_2 : tremorzilla.getAltSkin() == 2 ? TEXTURE_TECTONIC_BEAM_END_2 : (tremorzilla.getAltSkin() == 1 ? TEXTURE_RETRO_BEAM_END_2 : TEXTURE_BEAM_END_2);
     }
 
     @ModifyReturnValue(method = "getEndBeamTexture", at = @At("RETURN"),remap = false)
     private ResourceLocation beam6(ResourceLocation original, @Local TremorzillaEntity tremorzilla) {
-        Gammafied myAccessor = (Gammafied) tremorzilla;
-        return AlexsCavesExemplified.COMMON_CONFIG.GAMMA_TREMORZILLA_ENABLED.get() && myAccessor.isGamma() ? TEXTURE_GAMMA_BEAM_END_0 : tremorzilla.getAltSkin() == 2 ? TEXTURE_TECTONIC_BEAM_END_0 : (tremorzilla.getAltSkin() == 1 ? TEXTURE_RETRO_BEAM_END_0 : TEXTURE_BEAM_END_0);
+        return AlexsCavesExemplified.COMMON_CONFIG.GAMMA_TREMORZILLA_ENABLED.get() && tremorzilla.getData(ACExAttachments.GAMMA) ? TEXTURE_GAMMA_BEAM_END_0 : tremorzilla.getAltSkin() == 2 ? TEXTURE_TECTONIC_BEAM_END_0 : (tremorzilla.getAltSkin() == 1 ? TEXTURE_RETRO_BEAM_END_0 : TEXTURE_BEAM_END_0);
     }
 
 

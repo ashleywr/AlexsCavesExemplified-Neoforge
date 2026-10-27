@@ -4,7 +4,6 @@ import com.github.alexmodguy.alexscaves.server.block.ACSoundTypes;
 import com.github.alexmodguy.alexscaves.server.block.CavePaintingBlock;
 import com.github.alexmodguy.alexscaves.server.item.BlockItemWithSupplierLore;
 import com.github.alexthe666.citadel.item.BlockItemWithSupplier;
-import net.minecraft.ChatFormatting;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.*;
@@ -18,6 +17,7 @@ import org.crimsoncrips.alexscavesexemplified.server.blocks.cauldron.AcidCauldro
 import org.crimsoncrips.alexscavesexemplified.server.blocks.cauldron.MetalCauldronBlock;
 import org.crimsoncrips.alexscavesexemplified.server.blocks.cauldron.PurpleSodaCauldronBlock;
 import org.crimsoncrips.alexscavesexemplified.server.item.ACExItemRegistry;
+import org.crimsoncrips.alexscavesexemplified.server.item.ACExRarity;
 
 import java.util.function.Supplier;
 
@@ -25,11 +25,9 @@ public class ACExBlockRegistry {
 
    public static final DeferredRegister<Block> DEF_REG = DeferredRegister.create(Registries.BLOCK, AlexsCavesExemplified.MODID);
 
-    public static final Rarity RARITY_GAMMA = Rarity.EPIC;
-
     public static final DeferredHolder<Block, Block> METAL_CAULDRON = registerBlockAndItem("metal_cauldron", () -> new MetalCauldronBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).sound(ACSoundTypes.SCRAP_METAL).noOcclusion()));
 
-    public static final DeferredHolder<Block, Block> GAMMA_NUCLEAR_BOMB = registerBlockAndItemAnomaly("gamma_nuclear_bomb", () -> new ACExGammaNuke(),RARITY_GAMMA);
+    public static final DeferredHolder<Block, Block> GAMMA_NUCLEAR_BOMB = registerBlockAndItemAnomaly("gamma_nuclear_bomb", () -> new ACExGammaNuke(), ACExRarity.GAMMA.getValue());
 
     public static final DeferredHolder<Block, Block> ACID_CAULDRON = DEF_REG.register("acid_cauldron", () -> new AcidCauldronBlock(BlockBehaviour.Properties.ofFullCopy(METAL_CAULDRON.get()).lightLevel((p_50870_) -> 13)));
 

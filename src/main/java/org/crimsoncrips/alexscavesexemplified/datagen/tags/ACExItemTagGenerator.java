@@ -24,6 +24,7 @@ public class ACExItemTagGenerator extends ItemTagsProvider {
 	public static final TagKey<Item> LIGHT = create("light");
 	public static final TagKey<Item> SWEETS = create("sweets");
 	public static final TagKey<Item> GELATIN = create("gelatin");
+	public static final TagKey<Item> MAGNETICISM_ENCHANTABLE = create("magneticism_enchantable");
 
     public ACExItemTagGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> future, CompletableFuture<TagLookup<Block>> provider, ExistingFileHelper helper) {
         super(output, future, provider, AlexsCavesExemplified.MODID, helper);
@@ -32,6 +33,11 @@ public class ACExItemTagGenerator extends ItemTagsProvider {
 	@SuppressWarnings("unchecked")
     @Override
 	protected void addTags(HolderLookup.Provider provider) {
+
+		tag(MAGNETICISM_ENCHANTABLE).add(
+				ACItemRegistry.GALENA_GAUNTLET.get(),
+				ACItemRegistry.RESISTOR_SHIELD.get()
+		);
 
 		tag(GELATIN).add(
 				ACItemRegistry.GELATIN_BLUE.get(),
@@ -229,6 +235,6 @@ public class ACExItemTagGenerator extends ItemTagsProvider {
 	}
 
 	public static TagKey<Item> makeForgeTag(String tagName) {
-		return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", tagName));
+		return ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", tagName));
 	}
 }

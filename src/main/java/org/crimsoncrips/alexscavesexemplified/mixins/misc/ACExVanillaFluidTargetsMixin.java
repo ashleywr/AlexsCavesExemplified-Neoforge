@@ -19,11 +19,11 @@ public abstract class ACExVanillaFluidTargetsMixin {
     @ModifyReturnValue(method = "canProvideFluidWithoutCapability", at = @At("RETURN"),remap = false)
     private static boolean alexsMobsInteraction$canProvideFluidWithoutCapability(boolean original, @Local BlockState blockState) {
         if (blockState.is(ACExBlockRegistry.ACID_CAULDRON.get())) {
-            return true;
+            return ACExBlockRegistry.ACID_CAULDRON.isBound();
         } else if (blockState.is(ACExBlockRegistry.PURPLE_SODA_CAULDRON.get())) {
-            return true;
+            return ACExBlockRegistry.PURPLE_SODA_CAULDRON.isBound();
         } else if (blockState.is(ACExBlockRegistry.METAL_CAULDRON.get())) {
-            return true;
+            return ACExBlockRegistry.METAL_CAULDRON.isBound();
         }
         return original;
     }

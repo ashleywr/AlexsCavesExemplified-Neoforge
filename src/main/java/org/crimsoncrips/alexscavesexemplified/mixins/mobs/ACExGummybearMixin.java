@@ -1,11 +1,11 @@
 package org.crimsoncrips.alexscavesexemplified.mixins.mobs;
 
+import net.minecraft.core.component.DataComponents;
 import com.github.alexmodguy.alexscaves.server.entity.living.GummyBearEntity;
 import com.github.alexmodguy.alexscaves.server.entity.util.GummyColors;
 import com.github.alexmodguy.alexscaves.server.item.ACItemRegistry;
 import com.github.alexmodguy.alexscaves.server.misc.ACSoundRegistry;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -72,21 +72,19 @@ public abstract class ACExGummybearMixin extends Animal {
 
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
-        if (isDigestiblePotion(itemstack) && !isDigesting()) {
+        PotionContents potionContents = itemstack.get(DataComponents.POTION_CONTENTS);
+        if (isDigestiblePotion(itemstack) && !isDigesting() && potionContents != null && potionContents.potion().isPresent()) {
             if (AlexsCavesExemplified.COMMON_CONFIG.JELLYBEAN_CHANGES_ENABLED.get()) {
                 this.jellybeansToMake = 0;
             }
             this.setDigesting(true);
-            PotionContents contents = itemstack.get(DataComponents.POTION_CONTENTS);
-            if (contents != null && contents.potion().isPresent()) {
-                this.digestEffect(contents.potion().get().value());
-            }
+            this.digestEffect(potionContents.potion().get().value());
             this.usePlayerItem(player, hand, itemstack);
             if (!player.getAbilities().instabuild) {
                 player.addItem(new ItemStack(Items.GLASS_BOTTLE));
             }
 
-            this.sleepFor = 24000 * (2 + this.random.nextInt(2));
+            this.sleepFor = ACExUtils.seconds(1200.0F) * (2 + this.random.nextInt(2));
             if (AlexsCavesExemplified.COMMON_CONFIG.JELLYBEAN_CHANGES_ENABLED.get()) {
                 this.setVariable = sleepFor;
                 this.jellybeansToMake = 1 + setVariable / 8000;
@@ -147,8 +145,8 @@ public abstract class ACExGummybearMixin extends Animal {
     public void boost(Entity entity,ItemStack itemStack){
         itemStack.shrink(1);
         ACExUtils.awardAdvancement(entity,"feed_speedup","feed");
-        if (sleepFor >= 1000) {
-            this.sleepFor = sleepFor - 1000;
+        if (sleepFor >= ACExUtils.seconds(50.0F)) {
+            this.sleepFor = sleepFor - ACExUtils.seconds(50.0F);
         } else {
             this.sleepFor = 0;
         }

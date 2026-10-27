@@ -2,7 +2,6 @@ package org.crimsoncrips.alexscavesexemplified.server.effect;
 
 import com.github.alexmodguy.alexscaves.client.particle.ACParticleRegistry;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -16,10 +15,10 @@ public class ACExSerened extends MobEffect {
 
     public ACExSerened() {
         super(MobEffectCategory.NEUTRAL, 0X1cff59);
-        this.addAttributeModifier(Attributes.MAX_HEALTH, ResourceLocation.fromNamespaceAndPath(AlexsCavesExemplified.MODID, "serened_health"), 1.1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-        this.addAttributeModifier(Attributes.MOVEMENT_SPEED, ResourceLocation.fromNamespaceAndPath(AlexsCavesExemplified.MODID, "serened_speed"), -0.02, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-        this.addAttributeModifier(Attributes.ATTACK_DAMAGE, ResourceLocation.fromNamespaceAndPath(AlexsCavesExemplified.MODID, "serened_attack"), -1.05, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-        this.addAttributeModifier(Attributes.ARMOR, ResourceLocation.fromNamespaceAndPath(AlexsCavesExemplified.MODID, "serened_armor"), 2, AttributeModifier.Operation.ADD_VALUE);
+        this.addAttributeModifier(Attributes.MAX_HEALTH, AlexsCavesExemplified.prefix("effect.serened.max_health"), 1.1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        this.addAttributeModifier(Attributes.MOVEMENT_SPEED, AlexsCavesExemplified.prefix("effect.serened.movement_speed"), -0.020000000, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        this.addAttributeModifier(Attributes.ATTACK_DAMAGE, AlexsCavesExemplified.prefix("effect.serened.attack_damage"), -1.05, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        this.addAttributeModifier(Attributes.ARMOR, AlexsCavesExemplified.prefix("effect.serened.armor"), 2, AttributeModifier.Operation.ADD_VALUE);
 
     }
 

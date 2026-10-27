@@ -1,13 +1,11 @@
 package org.crimsoncrips.alexscavesexemplified.loot;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
@@ -16,9 +14,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class ACExAddItemModifier extends LootModifier {
 
-    public static final Supplier<MapCodec<ACExAddItemModifier>> CODEC = Suppliers.memoize(()
-            -> RecordCodecBuilder.mapCodec(inst -> codecStart(inst).and(BuiltInRegistries.ITEM.byNameCodec()
-            .fieldOf("item").forGetter(m -> m.item)).apply(inst, ACExAddItemModifier::new)));
+    public static final MapCodec<ACExAddItemModifier> CODEC = RecordCodecBuilder.mapCodec(inst -> codecStart(inst)
+            .and(BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(m -> m.item))
+            .apply(inst, ACExAddItemModifier::new));
 
     private final Item item;
 
@@ -40,6 +38,6 @@ public class ACExAddItemModifier extends LootModifier {
 
     @Override
     public MapCodec<? extends IGlobalLootModifier> codec() {
-        return CODEC.get();
+        return CODEC;
     }
 }

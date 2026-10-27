@@ -5,7 +5,7 @@
 
 package org.crimsoncrips.alexscavesexemplified.server.blocks.cauldron;
 
-import com.mojang.serialization.MapCodec;
+import org.crimsoncrips.alexscavesexemplified.misc.ACExUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -17,13 +17,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.crimsoncrips.alexscavesexemplified.AlexsCavesExemplified;
 
 public class PurpleSodaCauldronBlock extends ACExCauldron {
-
-    public static final MapCodec<PurpleSodaCauldronBlock> CODEC = simpleCodec(PurpleSodaCauldronBlock::new);
-
-    @Override
-    protected MapCodec<? extends PurpleSodaCauldronBlock> codec() {
-        return CODEC;
-    }
 
 
     public PurpleSodaCauldronBlock(Properties p_153498_) {
@@ -38,7 +31,7 @@ public class PurpleSodaCauldronBlock extends ACExCauldron {
 
     public void entityInside(BlockState p_153506_, Level p_153507_, BlockPos p_153508_, Entity entity) {
         if (this.isEntityInsideContent(p_153506_, p_153508_, entity) && AlexsCavesExemplified.COMMON_CONFIG.STICKY_SODA_ENABLED.get() && entity instanceof LivingEntity livingEntity) {
-            livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 90, 0));
+            livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ACExUtils.seconds(4.5F), 0));
         }
 
     }

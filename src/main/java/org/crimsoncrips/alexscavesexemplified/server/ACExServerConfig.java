@@ -6,6 +6,13 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ACExServerConfig {
     public final ModConfigSpec.BooleanValue GLUTTONY_ENABLED;
+    public final ModConfigSpec.BooleanValue SUBMARINE_REMOTE_ENABLED;
+    public final ModConfigSpec.BooleanValue RADIANT_CONSUMPTION_ENABLED;
+    public final ModConfigSpec.BooleanValue LICOWITCH_TRANSMUTATION_ENABLED;
+    public final ModConfigSpec.BooleanValue BUCKSHOT_GUM_ENABLED;
+    public final ModConfigSpec.BooleanValue SHOTGUM_KNOCKBACK_ENABLED;
+    public final ModConfigSpec.BooleanValue ARMED_UNDERZEALOT_ENABLED;
+    public final ModConfigSpec.BooleanValue IRRADIATED_CROPS_ENABLED;
     public final ModConfigSpec.BooleanValue REDOABLE_SPELUNKY_ENABLED;
     public final ModConfigSpec.BooleanValue KNAWING_ENABLED;
     public final ModConfigSpec.BooleanValue AMPUTATION_ENABLED;
@@ -87,7 +94,6 @@ public class ACExServerConfig {
 
     public final  ModConfigSpec.BooleanValue HARDCORE_MAGNERIP_ENABLED;
     public final  ModConfigSpec.BooleanValue IP_ENABLED;
-    public final  ModConfigSpec.BooleanValue ACE_WIKI_ENABLED;
     public final  ModConfigSpec.BooleanValue SCALABLE_HOLOGRAM_ENABLED;
     public final  ModConfigSpec.BooleanValue TELETOR_ARMORY_ENABLED;
     public final  ModConfigSpec.BooleanValue SELF_DESTRUCT_ENABLED;
@@ -101,7 +107,6 @@ public class ACExServerConfig {
     public ACExServerConfig(final ModConfigSpec.Builder builder) {
         builder.push("General");
 
-        this.ACE_WIKI_ENABLED = buildBoolean(builder, "ACE_WIKI_ENABLED", " ", true, "Gives you the ace wiki book at start");
         this.REDOABLE_SPELUNKY_ENABLED = buildBoolean(builder, "REDOABLE_SPELUNKY_ENABLED", " ", true, "Whether it gives you back the tablet when exiting the spelunky table");
          this.SPELUNKY_ATTEMPTS_AMOUNT = buildInt(builder, "SPELUNKY_ATTEMPTS_AMOUNT", " ", 5, 1, Integer.MAX_VALUE, "Amount of tries you get for the spelunky table per tablet");
          this.CHARGED_CAVE_CREEPER_CHANCE = buildDouble(builder, "CHARGED_CAVE_CREEPER_CHANCE", " ", 0.2,0.0,1.0, "Chances of creepers from caves to be charged (0 for disable)");
@@ -115,8 +120,12 @@ public class ACExServerConfig {
         builder.pop();
         builder.push("Candy Cavity");
         this.GLUTTONY_ENABLED = buildBoolean(builder, "GLUTTONY_ENABLED", " ", true, "Consume blocks when right clicking, and minor interactions with eating food");
+        this.RADIANT_CONSUMPTION_ENABLED = buildBoolean(builder, "RADIANT_CONSUMPTION_ENABLED", " ", true, "Radiant essence can be consumed by right clicking it, filling a radiant meter whose charges power the sugar staff overdrive");
+        this.LICOWITCH_TRANSMUTATION_ENABLED = buildBoolean(builder, "LICOWITCH_TRANSMUTATION_ENABLED", " ", true, "Licowitches sometimes throw a potion of transmutation, turning mobs in the alexscavesexemplified:transmutable entity tag into candy cavity creatures");
+        this.BUCKSHOT_GUM_ENABLED = buildBoolean(builder, "BUCKSHOT_GUM_ENABLED", " ", true, "The shot gum fires a spread of gumball pellets like a shotgun, devastating up close and weak at range");
+        this.SHOTGUM_KNOCKBACK_ENABLED = buildBoolean(builder, "SHOTGUM_KNOCKBACK_ENABLED", " ", true, "Firing the shot gum blasts the shooter back a few blocks");
         this.STICKY_SODA_ENABLED = buildBoolean(builder, "STICKY_SODA_ENABLED", " ", true, "Whether purple soda causes stickyness when in it");
-        this.RADIANT_WRATH_ENABLED = buildBoolean(builder, "RADIANT_WRATH_ENABLED", " ", true, "Having Radiant Essence amplifies the attacks of Sugar Staff");
+        this.RADIANT_WRATH_ENABLED = buildBoolean(builder, "RADIANT_WRATH_ENABLED", " ", true, "Right clicking the Sugar Staff opens a wheel of radiant abilities, each costing a radiant charge");
         this.TUNED_SATING_ENABLED = buildBoolean(builder, "TUNED_SATING_ENABLED", " ", true, "Dropping foods in a dropped sack of sating will consume the dropped foods");
         this.SUGAR_CRASH_ENABLED = buildBoolean(builder, "SUGAR_CRASH_ENABLED", " ", true, "Sugar Rushes at the end will cause sugar crashed dealing damage and temporary slowness");
         this.ICED_CREAM_ENABLED = buildBoolean(builder, "ICED_CREAM_ENABLED", " ", true, "Thrown ice cream slightly freezes those that are hit");
@@ -155,7 +164,7 @@ public class ACExServerConfig {
 
         builder.pop();
         builder.push("Forlorn Hollows");
-        builder.comment("--Compatible with Curios Lanterns--");
+        builder.comment("--Compatible with Curios--");
         this.FORLORN_LIGHT_EFFECT_ENABLED = buildBoolean(builder, "FORLORN_LIGHT_EFFECT_ENABLED", " ", true, "Whether most forlorn mammals are effected when a player holds light");
         this.BURST_OUT_ENABLED = buildBoolean(builder, "BURST_OUT_ENABLED", " ", true, "Whether breaking Forlorn Hollows blocks has a chance to burst out Underzealots or Corrodents");
         this.RABIES_ENABLED = buildBoolean(builder, "RABIES_ENABLED", " ", true, "Rabies Effects for Forlorn Hollows");
@@ -173,6 +182,7 @@ public class ACExServerConfig {
         this.UNDERZEALOT_RESPECT_ENABLED = buildBoolean(builder, "UNDERZEALOT_RESPECT_ENABLED", " ", true, "Whether underzealot respect those that wear the darkness");
         builder.comment("--Compatible with Vine Lasso from AM--");
         this.DARK_OFFERING_ENABLED = buildBoolean(builder, "DARK_OFFERING_ENABLED", " ", true, "Allow you to offer sacrifices to underzealots when neutral to them");
+        this.ARMED_UNDERZEALOT_ENABLED = buildBoolean(builder, "ARMED_UNDERZEALOT_ENABLED", " ", true, "Some underzealots wield a desolate dagger, hitting as hard as it does and summoning its spectral blades");
 
         builder.pop();
         builder.push("Vesper");
@@ -193,6 +203,7 @@ public class ACExServerConfig {
         builder.comment("--Compatible with Soap from Supplementaries--");
         this.IRRADIATION_WASHOFF_ENABLED = buildBoolean(builder, "IRRADIATION_WASHOFF_ENABLED", " ", true, "Whether Irradiation wears off faster when in water");
         this.GEOTHERMAL_EFFECTS_ENABLED = buildBoolean(builder, "GEOTHERMAL_EFFECTS_ENABLED", " ", true, "Whether Geothermal Vents have effects when standing on top depending on the spewed smoke");
+        this.IRRADIATED_CROPS_ENABLED = buildBoolean(builder, "IRRADIATED_CROPS_ENABLED", " ", true, "Crops harvested inside the toxic caves are irradiated and give slight radiation when eaten");
 
 
         builder.push("Braniac");
@@ -243,9 +254,8 @@ public class ACExServerConfig {
         this.SCALABLE_HOLOGRAM_ENABLED = buildBoolean(builder, "SCALABLE_HOLOGRAM_ENABLED", "", true, "Scalable Holograms with Azurite/Scarlet ingots");
 
         this.MAGNERIP_ENABLED = buildBoolean(builder, "MAGNERIP_ENABLED", "", true, "Will rip magnetic items in your hands when afflicted with weakness");
-        builder.push("Magnerip");
+        builder.push("--Requires Magnerip--");
         this.HARDCORE_MAGNERIP_ENABLED = buildBoolean(builder, "HARDCORE_MAGNERIP_ENABLED", "", false, "Now causes all your magnetic items in your inventory will be attracted off you,no matter what");
-        builder.pop();
 
         builder.push("Boundroid");
         this.BOUNDED_MAGNETISM_ENABLED = buildBoolean(builder, "BOUNDED_MAGNETISM_ENABLED", " ", true, "Boundroid attracts magnetic items and attacks uniquely to magnetable players");
@@ -263,6 +273,7 @@ public class ACExServerConfig {
         this.ABYSSAL_CRUSH_ENABLED = buildBoolean(builder, "ABYSSAL_CRUSH_ENABLED", " ", true, "Whether abyssal chasms cause crushing damage to you and your breath meter when deep enough");
         this.ECOLOGICAL_REPUTATION_ENABLED = buildBoolean(builder, "ECOLOGICAL_REPUTATION_ENABLED", " ", true, "Affecting the abyssal ecosystem will have effects for your reputation");
         this.SUBMARINE_BUMP_ENABLED = buildBoolean(builder, "SUBMARINE_BUMP_ENABLED", " ", true, "Whether submarine deals damage when moving");
+        this.SUBMARINE_REMOTE_ENABLED = buildBoolean(builder, "SUBMARINE_REMOTE_ENABLED", " ", true, "Game controllers can be linked to a submarine and drive it remotely within 70 blocks");
 
         builder.push("Mine Guardian");
         this.REMINEDING_ENABLED = buildBoolean(builder, "REMINEDING_ENABLED", " ", true, "Whether mine guardians can be made and owned");
@@ -286,7 +297,8 @@ public class ACExServerConfig {
         builder.comment("--Compatible with Alexs Mobs--");
         this.TOUGH_ROACHES_ENABLED = buildBoolean(builder, "TOUGH_ROACHES_ENABLED", " ", false, "Roaches are nuke proof");
         this.SHOTNUKE_ENABLED = buildBoolean(builder, "SHOTNUKE_ENABLED", " ", false, "Shotgum shoots nukes");
-        builder.pop();
+
+
 
     }
 

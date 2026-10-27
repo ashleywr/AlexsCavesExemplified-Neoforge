@@ -1,14 +1,12 @@
 package org.crimsoncrips.alexscavesexemplified.mixins.mobs;
 
+import org.crimsoncrips.alexscavesexemplified.server.ACExAttachments;
 import com.github.alexmodguy.alexscaves.server.block.ACBlockRegistry;
-import com.github.alexmodguy.alexscaves.server.block.fluid.ACFluidRegistry;
 import com.github.alexmodguy.alexscaves.server.entity.item.FrostmintSpearEntity;
 import com.github.alexmodguy.alexscaves.server.entity.util.FrostmintExplosion;
-import com.github.alexmodguy.alexscaves.server.misc.ACAdvancementTriggerRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -20,6 +18,7 @@ import net.neoforged.fml.ModList;
 import org.crimsoncrips.alexscavesexemplified.AlexsCavesExemplified;
 import org.crimsoncrips.alexscavesexemplified.compat.CreateCompat;
 import org.crimsoncrips.alexscavesexemplified.misc.ACExUtils;
+import org.crimsoncrips.alexscavesexemplified.server.item.ACExSugarStaffAbilities;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -46,28 +45,18 @@ public abstract class ACExFrostmintSpearMixin extends AbstractArrow {
 
     @Override
     public boolean ignoreExplosion(Explosion explosion) {
-        return (AlexsCavesExemplified.COMMON_CONFIG.RADIANT_WRATH_ENABLED.get() && this.getPersistentData().getBoolean("FrostRadiant")) || super.ignoreExplosion(explosion);
+        return AlexsCavesExemplified.COMMON_CONFIG.RADIANT_WRATH_ENABLED.get() && this.getData(ACExAttachments.FROST_RADIANT);
     }
 
 
-    @Inject(method = "tick", at = @At("TAIL"))
-    private void tick(CallbackInfo ci) {
-        Level level = this.level();
-        if (this.isInFluidType()){
-            if (AlexsCavesExemplified.COMMON_CONFIG.AMPLIFIED_FROSTMINT_ENABLED.get() && this.isInFluidType(ACFluidRegistry.PURPLE_SODA_FLUID_TYPE.get()) && !level.isClientSide) {
-                FrostmintExplosion explosion = new FrostmintExplosion(level, this, this.getX() + 0.5F, this.getY() + 0.5F, this.getZ() + 0.5F, 4.0F, Explosion.BlockInteraction.DESTROY_WITH_DECAY, false);
-                explosion.explode();
-                explosion.finalizeExplosion(true);
-                if (this.getOwner() instanceof Player) {
-                    ACAdvancementTriggerRegistry.FROSTMINT_EXPLOSION.get().triggerForEntity(this.getOwner());
-                }
-                this.discard();
-            }
-        }
+    @Inject(method = "onHit", at = @At("HEAD"))
+    private void alexsCavesExemplified$onHit(HitResult hitResult, CallbackInfo ci) {
+        ACExSugarStaffAbilities.SPEAR_HITTING.set(this.getData(ACExAttachments.STAFF_SPEAR));
+    }
 
-        if (AlexsCavesExemplified.COMMON_CONFIG.RADIANT_WRATH_ENABLED.get() && this.getPersistentData().getBoolean("FrostRadiant") && this.tickCount > 100){
-            this.discard();
-        }
+    @Inject(method = "onHit", at = @At("RETURN"))
+    private void alexsCavesExemplified$onHit1(HitResult hitResult, CallbackInfo ci) {
+        ACExSugarStaffAbilities.SPEAR_HITTING.set(false);
     }
 
     @Inject(method = "onHit", at = @At("HEAD"))
@@ -105,7 +94,7 @@ public abstract class ACExFrostmintSpearMixin extends AbstractArrow {
                     BlockPos icePos = new BlockPos(blockPos.getX() + x, blockPos.getY() + y , blockPos.getZ() + z);
                     BlockState blockState = level.getBlockState(icePos);
                     if (blockState.is(block) && level.setBlock(icePos, output.defaultBlockState(), 3)) {
-                        level.scheduleTick(icePos, blockState.getBlock(), 2);
+                        level.scheduleTick(icePos, blockState.getBlock(), ACExUtils.seconds(0.1F));
                         this.discard();
                         ACExUtils.awardAdvancement(this.getOwner(),"frostmint_freeze","freeze");
                         explode();
